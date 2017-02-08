@@ -243,7 +243,7 @@ chmod +x bosh-cli-v2/bosh-cli*
   function finish {
     echo "Final state of director deployment:"
     echo "=========================================="
-    cat ${deployment_dir}/{manifest_filename}-state.json
+    cat ${deployment_dir}/${manifest_filename}-state.json
     echo "=========================================="
 
     echo "Director:"
