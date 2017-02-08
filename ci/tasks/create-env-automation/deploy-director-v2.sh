@@ -6,7 +6,7 @@ source /etc/profile.d/chruby.sh
 
 chruby 2.2.4
 
-check_param SL_VM_DOMAIN
+check_param SL_VM_PREFIX
 check_param SL_USERNAME
 check_param SL_API_KEY
 check_param SL_DATACENTER
@@ -36,6 +36,8 @@ certs_dir="${deployment_dir}/certs"
 mkdir -p $certs_dir
 
 manifest_filename="director-manifest.yml"
+
+SL_VM_DOMAIN=${SL_VM_PREFIX}.softlayer.com
 
 pushd $certs_dir
 
@@ -109,7 +111,7 @@ resource_pools:
     sha1: 8416bb3191065670e3220331333caecf7c23d884
   cloud_properties:
     Domain: softlayer.com
-    VmNamePrefix: bosh-softlayer
+    VmNamePrefix: $VmNamePrefix
     EphemeralDiskSize: 100
     StartCpus: 4
     MaxMemory: 8192
@@ -215,24 +217,28 @@ ${root_ca}
       username: $SL_USERNAME
       apiKey: $SL_API_KEY
 
-    agent: {mbus: "nats://$NATS_USERNAME:$NATS_PASSWORD@bosh-softlayer.softlayer.com:4222"}
+    agent: {mbus: "nats://$NATS_USERNAME:$NATS_PASSWORD@$SL_VM_DOMAIN:4222"}
 
     ntp: &ntp [0.pool.ntp.org, 1.pool.ntp.org]
 
 cloud_provider:
   template: {name: softlayer_cpi, release: bosh-softlayer-cpi}
 
-  mbus: https://$DI_USERNAME:$DI_PASSWORD@$SL_VM_DOMAIN.softlayer.com:6868
+  mbus: https://$DI_USERNAME:$DI_PASSWORD@$SL_VM_DOMAIN:6868
 
   properties:
     softlayer: *softlayer
-    agent: {mbus: "https://$DI_USERNAME:$DI_PASSWORD@SL_VM_DOMAIN.softlayer.com:6868"}
+    agent: {mbus: "https://$DI_USERNAME:$DI_PASSWORD@SL_VM_DOMAIN:6868"}
     blobstore: {provider: local, path: /var/vcap/micro_bosh/data/cache}
     ntp: *ntp
 
 EOF
 
 echo "Successfully created director yaml config file!"
+
+
+cat ${deployment_dir}/${manifest_filename}
+
 chmod +x bosh-cli-v2/bosh-cli* 
 
 echo "Using bosh-cli $(bosh-cli-v2/bosh-cli* -v)"
