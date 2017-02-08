@@ -47,7 +47,7 @@ pushd $certs_dir
   openssl req -x509 -new -nodes -key rootCA.key -out rootCA.pem -days 99999 -subj "/C=US/O=BOSH/CN=${SL_VM_DOMAIN}" >/dev/null 2>&1
 
   cat rootCA.pem
-  
+
   function generateCert {
     name=$1
     domain=$2
@@ -97,7 +97,7 @@ name: bosh
 releases:
 - name: bosh
   url: https://bosh.io/d/github.com/cloudfoundry/bosh?v=260.6
-  sha1: 22c79db2a785efa9cbc32c62b8094500e952e170
+  sha1: 1506526f39f7406d97ac6edc7601e1c29fce5df5
 - name: bosh-softlayer-cpi
   url: https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-softlayer-cpi-release?v=3.0.5
   sha1: e7eac102bf24b5c80574ffd287dff429bc8f0cd9
@@ -107,10 +107,10 @@ resource_pools:
   network: default
   stemcell:
     url: https://bosh.io/d/stemcells/bosh-softlayer-xen-ubuntu-trusty-go_agent?v=3312.17
-    sha1: 8416bb3191065670e3220331333caecf7c23d884
+    sha1: c4a68741bc34bce1b9c10a74df4319426a5aabf0
   cloud_properties:
     Domain: softlayer.com
-    VmNamePrefix: $VmNamePrefix
+    VmNamePrefix: $SL_VM_PREFIX
     EphemeralDiskSize: 100
     StartCpus: 4
     MaxMemory: 8192
@@ -227,7 +227,7 @@ cloud_provider:
 
   properties:
     softlayer: *softlayer
-    agent: {mbus: "https://$DI_USERNAME:$DI_PASSWORD@SL_VM_DOMAIN:6868"}
+    agent: {mbus: "https://$DI_USERNAME:$DI_PASSWORD@$SL_VM_DOMAIN:6868"}
     blobstore: {provider: local, path: /var/vcap/micro_bosh/data/cache}
     ntp: *ntp
 
