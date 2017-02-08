@@ -43,7 +43,7 @@ pushd $certs_dir
   openssl genrsa -out rootCA.key 2048 yes ""  >/dev/null 2>&1
 
   # show root CA for debugging
-  cat ./rootCA.key
+  cat ./rootCA.pem
 
   openssl req -x509 -new -nodes -key rootCA.key -out rootCA.pem -days 99999 -subj "/C=US/O=BOSH/CN=${SL_VM_DOMAIN}" >/dev/null 2>&1
 
@@ -95,7 +95,7 @@ name: bosh
 
 releases:
 - name: bosh
-  url: https://bosh.io/d/github.com/cloudfoundry/bosh?v=260.3
+  url: https://bosh.io/d/github.com/cloudfoundry/bosh?v=260.6
   sha1: 22c79db2a785efa9cbc32c62b8094500e952e170
 - name: bosh-softlayer-cpi
   url: https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-softlayer-cpi-release?v=3.0.5
@@ -105,7 +105,7 @@ resource_pools:
 - name: vms
   network: default
   stemcell:
-    url: https://bosh.io/d/stemcells/bosh-softlayer-xen-ubuntu-trusty-go_agent?v=3312.12
+    url: https://bosh.io/d/stemcells/bosh-softlayer-xen-ubuntu-trusty-go_agent?v=3312.17
     sha1: 8416bb3191065670e3220331333caecf7c23d884
   cloud_properties:
     Domain: softlayer.com
@@ -233,11 +233,10 @@ cloud_provider:
 EOF
 
 echo "Successfully created director yaml config file!"
-
+chmod +x bosh-cli-v2/bosh-cli* 
 
 echo "Using bosh-cli $(bosh-cli-v2/bosh-cli* -v)"
 echo "Deploying director..."
-chmod +x bosh-cli-v2/bosh-cli* 
 
 bosh-cli-v2/bosh-cli* create-env ${deployment_dir}/${manifest_filename}
 
