@@ -1,0 +1,36 @@
+---
+platform: linux
+image: docker:///boshcpi/azure-cpi-release
+
+inputs:
+- name: bosh-cli-v2
+- name: bosh-softlayer-tools
+
+outputs:
+-name: deploy-artifacts
+
+run:
+  path: bosh-softlayer-tools/ci/tasks/create-env-automation/deploy-director-v2.sh
+
+params:
+  SL_VM_DOMAIN:         replace-me
+  SL_USERNAME:          replace-me
+  SL_API_KEY:           replace-me
+  SL_DATACENTER:        replace-me
+  SL_VLAN_PUBLIC:       replace-me
+  SL_VLAN_PRIVATE:      replace-me
+  DI_USERNAME:          replace-me
+  DI_PASSWORD:          replace-me
+  HM_USERNAME:          replace-me      
+  HM_PASSWORD:          replace-me
+  DI_HM_USERNAME:       replace-me
+  DI_HM_PASSWORD:       replace-me     
+  PG_USERNAME:          replace-me
+  PG_PASSWORD:          replace-me
+  NATS_USERNAME:        replace-me
+  NATS_PASSWORD:        replace-me
+  BL_DIRECTOR_USERNAME: replace-me
+  BL_DIRECTOR_PASSWORD: replace-me
+  BL_AGENT_USERNAME:    replace-me
+  BL_AGENT_PASSWORD:    replace-me
+
