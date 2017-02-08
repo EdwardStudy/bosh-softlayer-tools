@@ -235,10 +235,10 @@ EOF
 echo "Successfully created director yaml config file!"
 
 
-echo "Using bosh-cli $(bosh-cli* -v)"
+echo "Using bosh-cli $(bosh-cli-v2/bosh-cli* -v)"
 echo "Deploying director..."
 
-bosh-cli* create-env ${deployment_dir}/${manifest_filename}
+bosh-cli-v2/bosh-cli* create-env ${deployment_dir}/${manifest_filename}
 
 echo "showing hosts"
 tee /etc/hosts ${deployment_dir}/director_hosts
@@ -247,7 +247,7 @@ echo "showing deployment status"
 cat ${deployment_dir}/bosh-deploy-state.json
 
 echo "trying to connecting director..."
-bosh-cli*  --ca-cert ${certs_dir}/rootCA.pem alias-env ${SL_VM_DOMAIN}
+bosh-cli-v2/bosh-cli*  --ca-cert ${certs_dir}/rootCA.pem alias-env ${SL_VM_DOMAIN}
 
 echo "saving config..."
 
