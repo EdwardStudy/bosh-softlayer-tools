@@ -46,6 +46,8 @@ pushd $certs_dir
 
   openssl req -x509 -new -nodes -key rootCA.key -out rootCA.pem -days 99999 -subj "/C=US/O=BOSH/CN=${SL_VM_DOMAIN}" >/dev/null 2>&1
 
+  cat rootCA.pem
+  
   function generateCert {
     name=$1
     domain=$2
