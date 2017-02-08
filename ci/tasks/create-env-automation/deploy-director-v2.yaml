@@ -7,7 +7,7 @@ inputs:
 - name: bosh-softlayer-tools
 
 outputs:
--name: deploy-artifacts
+- name: deploy-artifacts
 
 run:
   path: bosh-softlayer-tools/ci/tasks/create-env-automation/deploy-director-v2.sh
