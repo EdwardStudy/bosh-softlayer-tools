@@ -237,6 +237,7 @@ echo "Successfully created director yaml config file!"
 
 echo "Using bosh-cli $(bosh-cli-v2/bosh-cli* -v)"
 echo "Deploying director..."
+chmod +x bosh-cli-v2/bosh-cli* 
 
 bosh-cli-v2/bosh-cli* create-env ${deployment_dir}/${manifest_filename}
 
