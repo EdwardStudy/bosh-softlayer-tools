@@ -128,7 +128,7 @@ resource_pools:
 
 disk_pools:
 - name: disks
-  disk_size: 40_000
+  disk_size: 20_000
 
 networks:
 - name: default
@@ -253,9 +253,9 @@ chmod +x bosh-cli-v2/bosh-cli*
   
     echo "Saving config..."
     pushd ${deployment_dir}
-    tar -zcvf  director_artifacts.tgz ./
+    tar -zcvf  /tmp/director_artifacts.tgz ./
     popd
-    mv ${deployment_dir}/director_artifacts.tgz deploy-artifacts/
+    mv /tmp/director_artifacts.tgz deploy-artifacts/
 
   }
 
