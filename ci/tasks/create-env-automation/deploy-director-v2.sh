@@ -44,9 +44,6 @@ pushd $certs_dir
   echo "Generating root CA..."
   openssl genrsa -out rootCA.key 2048 yes ""  >/dev/null 2>&1
 
-  # show root CA for debugging
-  cat ./rootCA.pem
-
   openssl req -x509 -new -nodes -key rootCA.key -out rootCA.pem -days 99999 -subj "/C=US/O=BOSH/CN=${SL_VM_DOMAIN}" >/dev/null 2>&1
 
   function generateCert {
