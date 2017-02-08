@@ -250,9 +250,13 @@ chmod +x bosh-cli-v2/bosh-cli*
     echo "=========================================="
     cat /etc/hosts | grep "$SL_VM_DOMAIN" | tee ${deployment_dir}/director-info
     echo "=========================================="
-
+  
     echo "Saving config..."
-    tar -jcvf ${deployment_dir} deploy-artifacts/director_artifacts.tgz
+    pushd ${deployment_dir}
+    tar -zcvf  director_artifacts.tgz ./
+    popd
+    mv ${deployment_dir}/director_artifacts.tgz deploy-artifacts/
+
   }
 
 trap finish ERR
