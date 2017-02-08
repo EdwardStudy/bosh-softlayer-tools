@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e 
+set -e -x
 
 source bosh-softlayer-tools/ci/tasks/utils.sh
 source /etc/profile.d/chruby.sh
@@ -35,7 +35,7 @@ mkdir -p $deployment_dir
 certs_dir="${deployment_dir}/certs"
 mkdir -p $certs_dir
 
-manifest_filename="director-manifest.yml"
+manifest_filename="director-manifest"
 
 SL_VM_DOMAIN=${SL_VM_PREFIX}.softlayer.com
 
@@ -90,7 +90,7 @@ director_crt=$(awk '{printf("          %s\n", $0)}' ${certs_dir}/director.crt)
 root_ca=$(awk '{printf("        %s\n", $0)}' ${certs_dir}/rootCA.pem)
 
 
-cat > "${deployment_dir}/${manifest_filename}"<<EOF
+cat > "${deployment_dir}/${manifest_filename}.yml"<<EOF
 ---
 name: bosh
 
@@ -236,14 +236,14 @@ EOF
 echo "Successfully created director yaml config file!"
 
 
-cat ${deployment_dir}/${manifest_filename}
+cat ${deployment_dir}/${manifest_filename}.yml
 
 chmod +x bosh-cli-v2/bosh-cli* 
 
   function finish {
     echo "Final state of director deployment:"
     echo "=========================================="
-    cat ${deployment_dir}/bosh-deploy-state.json
+    cat ${deployment_dir}/{manifest_filename}-state.json
     echo "=========================================="
 
     echo "Director:"
@@ -260,12 +260,13 @@ trap finish ERR
 echo "Using bosh-cli $(bosh-cli-v2/bosh-cli* -v)"
 echo "Deploying director..."
 
-bosh-cli-v2/bosh-cli* create-env ${deployment_dir}/${manifest_filename}
+bosh-cli-v2/bosh-cli* create-env ${deployment_dir}/${manifest_filename}.yml
 
 echo "trying to connecting director..."
-bosh-cli-v2/bosh-cli*  --ca-cert ${certs_dir}/rootCA.pem alias-env ${SL_VM_DOMAIN}
+bosh-cli-v2/bosh-cli*  --ca-cert ${certs_dir}/rootCA.pem alias-env ${SL_VM_PREFIX} -e ${SL_VM_DOMAIN}
 
 trap - ERR
+
 finish
 
 
