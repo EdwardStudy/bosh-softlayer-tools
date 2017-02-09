@@ -8,8 +8,7 @@ source bosh-softlayer-tools/ci/tasks/utils.sh
 check_param SL_USERNAME
 check_param SL_API_KEY
 
-apt-get update && apt-get install -y expect python >> /dev/null
-easy_install pip 
+apt-get update && apt-get install -y  python-pip python-dev build-essential expect >> /dev/null
 
 echo "Using $(python -V)"
 
