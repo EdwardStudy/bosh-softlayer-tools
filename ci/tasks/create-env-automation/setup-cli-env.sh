@@ -2,9 +2,6 @@
 set -e -x
 source bosh-softlayer-tools/ci/tasks/utils.sh
 
-
-
-
 check_param SL_USERNAME
 check_param SL_API_KEY
 
@@ -27,8 +24,15 @@ endpoint_url = https://api.softlayer.com/xmlrpc/v3.1/
 timeout = 0
 EOF
 
+echo "Generating ssh private key..."
+
+ssh-keygen -f key.rsa -t rsa -N ''
+
 slcli -y vs create -H bosh-cli-v2-env -D softlayer.com \
-        -c 2 -m 2048 -d lon02 -o UBUNTU_LATEST > cli_vm_info
+        -c 2 -m 2048 -d lon02 -o UBUNTU_LATEST \
+        -k "$(cat key.rsa.pub)"> cli_vm_info
+
+cat key.rsa
 
 CLI_VM_ID=$(grep -w id cli_vm_info|awk '{print $2}')
 
@@ -39,7 +43,7 @@ while true
         if [ -n $CLI_VM_ACTIVE_TRANSACTION ];then
             CLI_LAST_VM_ACTIVE_TRANSACTION=$CLI_VM_ACTIVE_TRANSACTION
         fi
-        slcli vs detail ${CLI_VM_ID} || true > cli_vm_detail
+        (slcli vs detail ${CLI_VM_ID} || true) > cli_vm_detail
         CLI_VM_STATE=$(grep -w state cli_vm_detail|awk '{print $2}')
         CLI_VM_ACTIVE_TRANSACTION=$(grep -w  active_transaction cli_vm_detail|awk '{print $2}')
         if [ "$CLI_LAST_VM_ACTIVE_TRANSACTION" != "$CLI_VM_ACTIVE_TRANSACTION" ];then
@@ -67,9 +71,10 @@ EOF
 
 cp ./CLI_VM_INFO cli-vm-info/
 
+
+
 cat >add-private-key.sh<<EOF
 
-ssh-keygen -f key.rsa -t rsa -N ''
 
 #!/usr/bin/expect -f
 #
@@ -86,9 +91,9 @@ expect {
 }
 EOF
 
-chmod +x ./add-private-key.sh
+# chmod +x ./add-private-key.sh
 
-./add-private-key.sh root $CLI_VM_IP $CLI_VM_PWD
+# ./add-private-key.sh root $CLI_VM_IP $CLI_VM_PWD
 
 
 
