@@ -9,6 +9,7 @@ check_param SL_USERNAME
 check_param SL_API_KEY
 
 apt-get update && apt-get install -y expect python >> /dev/null
+easy_install pip 
 
 echo "Using $(python -V)"
 
