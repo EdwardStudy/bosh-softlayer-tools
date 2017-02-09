@@ -24,15 +24,12 @@ endpoint_url = https://api.softlayer.com/xmlrpc/v3.1/
 timeout = 0
 EOF
 
-echo "Generating ssh private key..."
 
-ssh-keygen -f key.rsa -t rsa -N ''
 
 slcli -y vs create -H bosh-cli-v2-env -D softlayer.com \
-        -c 2 -m 2048 -d lon02 -o UBUNTU_LATEST \
-        -k "$(cat key.rsa.pub)"> cli_vm_info
+        -c 2 -m 2048 -d lon02 -o UBUNTU_LATEST > cli_vm_info
 
-cat key.rsa
+
 
 CLI_VM_ID=$(grep -w id cli_vm_info|awk '{print $2}')
 
@@ -71,10 +68,11 @@ EOF
 
 cp ./CLI_VM_INFO cli-vm-info/
 
+echo "Generating ssh private key..."
 
+ssh-keygen -f key.rsa -t rsa -N ''
 
 cat >add-private-key.sh<<EOF
-
 
 #!/usr/bin/expect -f
 #
@@ -91,9 +89,9 @@ expect {
 }
 EOF
 
-# chmod +x ./add-private-key.sh
+chmod +x ./add-private-key.sh
 
-# ./add-private-key.sh root $CLI_VM_IP $CLI_VM_PWD
+./add-private-key.sh root $CLI_VM_IP $CLI_VM_PWD
 
 
 
