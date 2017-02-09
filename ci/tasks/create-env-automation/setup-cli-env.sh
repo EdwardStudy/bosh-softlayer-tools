@@ -91,7 +91,7 @@ chmod +x ./add-private-key.sh
 ./add-private-key.sh root $CLI_VM_IP $CLI_VM_PWD
 
 scp -i key.rsa director-artifacts/director_artifacts.tgz root@$CLI_VM_IP:/tmp/director_artifacts.tgz
-scp -i bosh-cli-v2/bosh-cli* root@$CLI_VM_IP:/tmp/
+scp -i key.rsa bosh-cli-v2/bosh-cli* root@$CLI_VM_IP:/tmp/
 
 ssh -i key.rsa root@$CLI_VM_IP <<EOF
 uname -a
