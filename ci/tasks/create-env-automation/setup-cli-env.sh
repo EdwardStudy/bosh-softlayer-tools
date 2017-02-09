@@ -2,6 +2,7 @@
 set -e -x
 source bosh-softlayer-tools/ci/tasks/utils.sh
 
+
 check_param SL_USERNAME
 check_param SL_API_KEY
 
