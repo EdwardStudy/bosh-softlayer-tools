@@ -3,8 +3,12 @@ set -e -x
 source bosh-softlayer-tools/ci/tasks/utils.sh
 
 
+
+
 check_param SL_USERNAME
 check_param SL_API_KEY
+
+apt-get update && apt-get install -y expect python >> /dev/null
 
 echo "Using $(python -V)"
 
@@ -14,9 +18,6 @@ pip install SoftLayer 2>&1 >> /dev/null
 
 echo "Using $(slcli --version)"
 
-# echo "Install expect interpreter..."
-
-# apt-get update && apt-get install -y expect >> /dev/null
 
 cat > ~/.softlayer <<EOF
 [softlayer]
