@@ -34,15 +34,12 @@ CLI_VM_ID=$(grep -w id cli_vm_info|awk '{print $2}')
 
 echo "CLI vm id : $CLI_VM_ID"
 
-slcli vs detail $CLI_VM_ID
-
-
 while true
     do
         if [ -n $CLI_VM_ACTIVE_TRANSACTION ];then
             CLI_LAST_VM_ACTIVE_TRANSACTION=$CLI_VM_ACTIVE_TRANSACTION
         fi
-        slcli vs detail ${CLI_VM_ID} > cli_vm_detail
+        slcli vs detail ${CLI_VM_ID} || true > cli_vm_detail
         CLI_VM_STATE=$(grep -w state cli_vm_detail|awk '{print $2}')
         CLI_VM_ACTIVE_TRANSACTION=$(grep -w  active_transaction cli_vm_detail|awk '{print $2}')
         if [ "$CLI_LAST_VM_ACTIVE_TRANSACTION" != "$CLI_VM_ACTIVE_TRANSACTION" ];then
