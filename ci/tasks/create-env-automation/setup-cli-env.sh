@@ -73,19 +73,18 @@ echo "Generating ssh private key..."
 ssh-keygen -f key.rsa -t rsa -N ''
 
 cat >add-private-key.sh<<EOF
-
 #!/usr/bin/expect -f
 #
 # Install RSA SSH KEY with no passphrase
 #
-set user [lindex $argv 0]
-set host [lindex $argv 1]
-set password [lindex $argv 2]
-spawn ssh-copy-id -i key.rsa.pub $user@$host
+set user [lindex \$argv 0]
+set host [lindex \$argv 1]
+set password [lindex \$argv 2]
+spawn ssh-copy-id -i key.rsa.pub \$user@\$host
 
 expect {
     "continue" { send "yes\n"; exp_continue }
-    "assword:" { send "$password\n"; }
+    "assword:" { send "\$password\n"; interact }
 }
 EOF
 
