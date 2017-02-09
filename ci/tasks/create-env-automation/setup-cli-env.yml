@@ -6,7 +6,7 @@ image_resource:
     repository: python
 
 inputs:
-- name: deploy-artifacts
+- name: director-artifacts
 - name: bosh-softlayer-tools
 
 outputs:
