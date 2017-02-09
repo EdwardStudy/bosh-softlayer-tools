@@ -7,7 +7,7 @@ image_resource:
 
 inputs:
 - name: deploy-artifacts
-- name: bosh-create-env-ci
+- name: bosh-softlayer-tools
 output:
 - name: cli-vm-info
 
