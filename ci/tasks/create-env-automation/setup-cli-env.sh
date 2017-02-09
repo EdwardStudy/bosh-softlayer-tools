@@ -25,10 +25,8 @@ timeout = 0
 EOF
 
 
-
 slcli -y vs create -H bosh-cli-v2-env -D softlayer.com \
         -c 2 -m 2048 -d lon02 -o UBUNTU_LATEST > cli_vm_info
-
 
 
 CLI_VM_ID=$(grep -w id cli_vm_info|awk '{print $2}')
@@ -91,6 +89,16 @@ EOF
 chmod +x ./add-private-key.sh
 
 ./add-private-key.sh root $CLI_VM_IP $CLI_VM_PWD
+
+scp -i key.rsa director-artifacts/director_artifacts.tgz root@$CLI_VM_IP:/tmp/director_artifacts.tgz
+scp -i bosh-cli-v2/bosh-cli* root@$CLI_VM_IP:/tmp/
+
+ssh -i key.rsa root@$CLI_VM_IP <<EOF
+uname -a
+mkdir deployment
+tar zxvf /tmp/director_artifacts.tgz -C ./deployment
+cp /tmp/bosh-cli* ./deployment
+EOF
 
 
 
