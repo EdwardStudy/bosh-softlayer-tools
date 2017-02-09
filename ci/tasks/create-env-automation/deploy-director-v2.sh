@@ -242,18 +242,18 @@ chmod +x bosh-cli-v2/bosh-cli*
 
   function finish {
     echo "Final state of director deployment:"
-    echo "=========================================="
+    echo "====================================================================="
     cat ${deployment_dir}/${manifest_filename}-state.json
-    echo "=========================================="
+    echo "====================================================================="
 
     echo "Director:"
-    echo "=========================================="
+    echo "====================================================================="
     cat /etc/hosts | grep "$SL_VM_DOMAIN" | tee ${deployment_dir}/director-info
-    echo "=========================================="
+    echo "====================================================================="
   
     echo "Saving config..."
     pushd ${deployment_dir}
-    tar -zcvf  /tmp/director_artifacts.tgz ./
+    tar -zcvf  /tmp/director_artifacts.tgz ./ >/dev/null 2>&1
     popd
     mv /tmp/director_artifacts.tgz deploy-artifacts/
 
@@ -266,7 +266,7 @@ echo "Deploying director..."
 
 bosh-cli-v2/bosh-cli* create-env ${deployment_dir}/${manifest_filename}.yml
 
-echo "trying to connecting director..."
+echo "trying to set target to director..."
 bosh-cli-v2/bosh-cli*  --ca-cert ${certs_dir}/rootCA.pem alias-env ${SL_VM_PREFIX} -e ${SL_VM_DOMAIN}
 
 trap - ERR

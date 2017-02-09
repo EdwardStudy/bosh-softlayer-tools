@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -e -x
 source bosh-softlayer-tools/ci/tasks/utils.sh
 
 check_param SL_USERNAME
@@ -46,11 +46,13 @@ while true
         if [ "$CLI_LAST_VM_ACTIVE_TRANSACTION" != "$CLI_VM_ACTIVE_TRANSACTION" ];then
             echo "waiting vm to boot and setup ... last transaction:$CLI_VM_ACTIVE_TRANSACTION"
         fi
-        if [ "$CLI_VM_STATE" == "RUNNING" -a "$CLI_VM_ACTIVE_TRANSACTION" == "NULL" ];then
+        CLI_VM_READY=$(slcli vs ready ${CLI_VM_ID})
+        if [ "$CLI_VM_READY" == "READY" ];then
             break
         fi
         sleep 20
     done
+
 echo "showing full vm info"
 slcli vs detail $CLI_VM_ID
 
@@ -65,6 +67,30 @@ password $CLI_VM_PWD
 EOF
 
 cp ./CLI_VM_INFO cli-vm-info/
+
+cat >add-private-key.sh<<EOF
+
+ssh-keygen -f key.rsa -t rsa -N ''
+
+#!/usr/bin/expect -f
+#
+# Install RSA SSH KEY with no passphrase
+#
+set user [lindex $argv 0]
+set host [lindex $argv 1]
+set password [lindex $argv 2]
+spawn ssh-copy-id -i key.rsa.pub $user@$host
+
+expect {
+    "continue" { send "yes\n"; exp_continue }
+    "assword:" { send "$password\n"; }
+}
+EOF
+
+chmod +x ./add-private-key.sh
+
+./add-private-key.sh root $CLI_VM_IP $CLI_VM_PWD
+
 
 
 
