@@ -49,7 +49,7 @@ while true
             echo "waiting vm to boot and setup ... last transaction:$CLI_VM_ACTIVE_TRANSACTION"
         fi
         CLI_VM_READY=$(slcli vs ready ${CLI_VM_ID} || true) 
-        if [ "$CLI_VM_READY" -eq "READY" ];then
+        if [ "$CLI_VM_READY" == "READY" ];then
             break
         fi
         sleep 20
