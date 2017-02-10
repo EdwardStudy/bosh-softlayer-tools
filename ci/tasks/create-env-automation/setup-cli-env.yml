@@ -5,6 +5,7 @@ image: docker:///boshcpi/azure-cpi-release
 inputs:
 - name: director-artifacts
 - name: bosh-softlayer-tools
+- name: bosh-cli-v2
 
 outputs:
 - name: cli-vm-info
@@ -15,7 +16,3 @@ run:
 params:
   SL_USERNAME:          replace-me
   SL_API_KEY:           replace-me
-
-
-
-
