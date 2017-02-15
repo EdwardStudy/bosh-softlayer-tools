@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -e -x
 
 source bosh-softlayer-tools/ci/tasks/utils.sh
 source /etc/profile.d/chruby.sh
@@ -91,7 +91,7 @@ chmod +x bosh-cli-v2/bosh-cli*
   function finish {
     echo "Final state of director deployment:"
     echo "====================================================================="
-    cat ${deployment_dir}/${manifest_filename}-state.json
+    # cat ${deployment_dir}/${manifest_filename}-state.json
     echo "====================================================================="
 
     echo "Director:"
@@ -112,7 +112,7 @@ trap finish ERR
 echo "Using bosh-cli $(bosh-cli-v2/bosh-cli* -v)"
 echo "Generating director manifest file..."
 
-bosh-cli-v2/bosh-cli* interpolate bosh-softlayer-tools/ci/templates/director-template.yml \
+bosh-cli-v2/bosh-cli* create-env bosh-softlayer-tools/ci/templates/director-template.yml \
                       --vars-store ${deployment_dir}/credentials.yml \
                       -v SL_VM_PREFIX=${SL_VM_PREFIX} \
                       -v SL_VM_DOMAIN=${SL_VM_DOMAIN} \
@@ -137,11 +137,10 @@ bosh-cli-v2/bosh-cli* interpolate bosh-softlayer-tools/ci/templates/director-tem
                       -v BL_AGENT_PASSWORD=${BL_AGENT_PASSWORD} \
                       --var-file ROOT_CERT=${certs_dir}/rootCA.pem \
                       --var-file DIRECTOR_KEY=${certs_dir}/director.key \
-                      --var-file DIRECTOR_CERT=${certs_dir}/director.crt \
-                      |tee ${deployment_dir}/${manifest_filename}.yml
-
-echo "Deploying director..."
-bosh-cli-v2/bosh-cli* create-env ${deployment_dir}/director-manifest.yml                
+                      --var-file DIRECTOR_CERT=${certs_dir}/director.crt 
+                      
+# echo "Deploying director..."
+# bosh-cli-v2/bosh-cli* create-env ${deployment_dir}/director-manifest.yml                
 
 echo "Trying to set target to director..."
 bosh-cli-v2/bosh-cli*  --ca-cert ${certs_dir}/rootCA.pem alias-env ${SL_VM_PREFIX} -e ${SL_VM_DOMAIN}
