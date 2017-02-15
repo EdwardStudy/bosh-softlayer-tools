@@ -252,11 +252,11 @@ chmod +x bosh-cli-v2/bosh-cli*
     echo "====================================================================="
   
     echo "Saving config..."
+    cp bosh-cli-v2/bosh-cli* ${deployment_dir}/
     pushd ${deployment_dir}
     tar -zcvf  /tmp/director_artifacts.tgz ./ >/dev/null 2>&1
     popd
     mv /tmp/director_artifacts.tgz deploy-artifacts/
-
   }
 
 trap finish ERR

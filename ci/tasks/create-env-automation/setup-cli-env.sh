@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-set -e -x
+set -e
 source bosh-softlayer-tools/ci/tasks/utils.sh
 
 check_param SL_USERNAME
 check_param SL_API_KEY
+check_param SL_DATACENTER
 
 apt-get update && apt-get install -y  python-pip python-dev build-essential expect >> /dev/null
 
@@ -15,7 +16,6 @@ pip install SoftLayer 2>&1 >> /dev/null
 
 echo "Using $(slcli --version)"
 
-
 cat > ~/.softlayer <<EOF
 [softlayer]
 username = $SL_USERNAME
@@ -24,9 +24,8 @@ endpoint_url = https://api.softlayer.com/xmlrpc/v3.1/
 timeout = 0
 EOF
 
-
 slcli -y vs create -H bosh-cli-v2-env -D softlayer.com \
-        -c 2 -m 2048 -d lon02 -o UBUNTU_LATEST > cli_vm_info
+        -c 2 -m 2048 -d ${SL_DATACENTER} -o UBUNTU_LATEST > cli_vm_info
 
 
 CLI_VM_ID=$(grep -w id cli_vm_info|awk '{print $2}')
@@ -52,13 +51,14 @@ while true
     done
 
 echo "showing full vm info"
-slcli vs detail $CLI_VM_ID
+slcli vs detail $CLI_VM_ID --passwords
 
 CLI_VM_IP=$(grep -w public_ip cli_vm_detail|awk '{print $2}')
 
 CLI_VM_PWD=$(slcli vs credentials $CLI_VM_ID|grep -w root|awk '{print $2}')
 
 #Collect info of cli vm and send to s3
+
 cat >CLI_VM_INFO<<EOF
 ip $CLI_VM_IP
 password $CLI_VM_PWD
@@ -87,21 +87,17 @@ expect {
 EOF
 
 chmod +x ./add-private-key.sh
-
 ./add-private-key.sh root $CLI_VM_IP $CLI_VM_PWD
 
 scp -i key.rsa director-artifacts/director_artifacts.tgz root@$CLI_VM_IP:/tmp/director_artifacts.tgz
-scp -i key.rsa bosh-cli-v2/bosh-cli* root@$CLI_VM_IP:/tmp/
 
 ssh -i key.rsa root@$CLI_VM_IP <<EOF
 uname -a
 mkdir deployment
 tar zxvf /tmp/director_artifacts.tgz -C ./deployment
-cp /tmp/bosh-cli* ./deployment
+cat ./deployment/director-info >> /etc/hosts
+chmod +X /deployment/bosh-cli*
 EOF
-
-
-
 
 
 
