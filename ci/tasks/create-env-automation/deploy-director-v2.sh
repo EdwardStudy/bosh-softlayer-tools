@@ -109,10 +109,10 @@ chmod +x bosh-cli-v2/bosh-cli*
 trap finish ERR
 
 echo "Using bosh-cli $(bosh-cli-v2/bosh-cli* -v)"
-echo "Deploying director..."
+echo "Generating director manifest file..."
 
-bosh-cli-v2/bosh-cli* create-env bosh-softlayer-tools/ci/templates/director-template.yml \
-                      --state ${deployment_dir}/director-state.json \
+bosh-cli-v2/bosh-cli* interpolate bosh-softlayer-tools/ci/templates/director-template.yml \
+                      --vars-store ${deployment_dir}/credentials.yml \
                       -v SL_VM_PREFIX=${SL_VM_PREFIX} \
                       -v SL_VM_DOMAIN=${SL_VM_DOMAIN} \
                       -v SL_USERNAME=${SL_USERNAME} \
@@ -137,9 +137,12 @@ bosh-cli-v2/bosh-cli* create-env bosh-softlayer-tools/ci/templates/director-temp
                       --var-file ROOT_CERT=${certs_dir}/rootCA.pem \
                       --var-file DIRECTOR_KEY=${certs_dir}/director.key \
                       --var-file DIRECTOR_CERT=${certs_dir}/director.crt \
-                      --vars-store ${deployment_dir}/credentials.yml
+                      |tee ${deployment_dir}/director-manifest.yml
 
-echo "trying to set target to director..."
+echo "Deploying director..."
+bosh-cli-v2/bosh-cli* create-env ${deployment_dir}/director-manifest.yml                
+
+echo "Trying to set target to director..."
 bosh-cli-v2/bosh-cli*  --ca-cert ${certs_dir}/rootCA.pem alias-env ${SL_VM_PREFIX} -e ${SL_VM_DOMAIN}
 
 trap - ERR
