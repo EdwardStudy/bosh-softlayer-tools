@@ -85,156 +85,6 @@ EOL
 
 popd 
 
-director_key=$(awk '{printf("          %s\n", $0)}' ${certs_dir}/director.key)
-director_crt=$(awk '{printf("          %s\n", $0)}' ${certs_dir}/director.crt)
-root_ca=$(awk '{printf("        %s\n", $0)}' ${certs_dir}/rootCA.pem)
-
-
-cat > "${deployment_dir}/${manifest_filename}.yml"<<EOF
----
-name: bosh
-
-releases:
-- name: bosh
-  url: https://bosh.io/d/github.com/cloudfoundry/bosh?v=260.6
-  sha1: 1506526f39f7406d97ac6edc7601e1c29fce5df5
-- name: bosh-softlayer-cpi
-  url: https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-softlayer-cpi-release?v=3.0.5
-  sha1: e7eac102bf24b5c80574ffd287dff429bc8f0cd9
-
-resource_pools:
-- name: vms
-  network: default
-  stemcell:
-    url: https://bosh.io/d/stemcells/bosh-softlayer-xen-ubuntu-trusty-go_agent?v=3312.17
-    sha1: c4a68741bc34bce1b9c10a74df4319426a5aabf0
-  cloud_properties:
-    Domain: softlayer.com
-    VmNamePrefix: $SL_VM_PREFIX
-    EphemeralDiskSize: 100
-    StartCpus: 4
-    MaxMemory: 8192
-    Datacenter:
-      Name: $SL_DATACENTER
-    HourlyBillingFlag: true
-    PrimaryNetworkComponent:
-      NetworkVlan:
-        Id: $SL_VLAN_PUBLIC
-    PrimaryBackendNetworkComponent:
-      NetworkVlan:
-        Id: $SL_VLAN_PRIVATE
-    NetworkComponents:
-    - MaxSpeed: 1000
-
-disk_pools:
-- name: disks
-  disk_size: 20_000
-
-networks:
-- name: default
-  type: dynamic
-  dns: [8.8.8.8]
-
-jobs:
-- name: bosh
-  instances: 1
-
-  templates:
-  - {name: nats, release: bosh}
-  - {name: postgres, release: bosh}
-  - {name: blobstore, release: bosh}
-  - {name: director, release: bosh}
-  - {name: health_monitor, release: bosh}
-  - {name: powerdns, release: bosh}
-  - {name: softlayer_cpi, release: bosh-softlayer-cpi}
-
-  resource_pool: vms
-  persistent_disk_pool: disks
-
-  networks:
-  - name: default
-
-  properties:
-    nats:
-      address: 127.0.0.1
-      user: $NATS_USERNAME
-      password: $NATS_PASSWORD
-
-    postgres: &db
-      listen_address: 127.0.0.1
-      host: 127.0.0.1
-      user: $PG_USERNAME
-      password: $PG_PASSWORD
-      database: bosh
-      adapter: postgres
-
-    blobstore:
-      address: 127.0.0.1
-      port: 25250
-      provider: dav
-      director:
-        user: $BL_DIRECTOR_USERNAME
-        password: $BL_DIRECTOR_PASSWORD
-      agent:
-        user: $BL_AGENT_USERNAME
-        password: $BL_AGENT_PASSWORD
-
-    director:
-      ssl:
-        key: |
-${director_key}
-        cert: |
-${director_crt}
-      address: 127.0.0.1
-      name: bosh
-      cpi_job: softlayer_cpi
-      db: *db
-      user_management:
-        provider: local
-        local:
-          users:
-          - {name: $DI_USERNAME, password: $DI_PASSWORD}
-          - {name: $DI_HM_USERNAME, password: $DI_HM_PASSWORD} 
-
-    hm:
-      ca_cert: |
-${root_ca}
-      director_account:
-        user: $HM_USERNAME
-        password: $HM_PASSWORD
-      resurrector_enabled: true
-
-    dns:
-      address: 127.0.0.1
-      domain_name: bosh
-      db: *db
-      webserver:
-        port: 8081
-        address: 0.0.0.0
-
-    softlayer: &softlayer
-      username: $SL_USERNAME
-      apiKey: $SL_API_KEY
-
-    agent: {mbus: "nats://$NATS_USERNAME:$NATS_PASSWORD@$SL_VM_DOMAIN:4222"}
-
-    ntp: &ntp [0.pool.ntp.org, 1.pool.ntp.org]
-
-cloud_provider:
-  template: {name: softlayer_cpi, release: bosh-softlayer-cpi}
-
-  mbus: https://$DI_USERNAME:$DI_PASSWORD@$SL_VM_DOMAIN:6868
-
-  properties:
-    softlayer: *softlayer
-    agent: {mbus: "https://$DI_USERNAME:$DI_PASSWORD@$SL_VM_DOMAIN:6868"}
-    blobstore: {provider: local, path: /var/vcap/micro_bosh/data/cache}
-    ntp: *ntp
-
-EOF
-
-echo "Successfully created director yaml config file!"
-
 
 cat ${deployment_dir}/${manifest_filename}.yml
 
@@ -264,7 +114,32 @@ trap finish ERR
 echo "Using bosh-cli $(bosh-cli-v2/bosh-cli* -v)"
 echo "Deploying director..."
 
-bosh-cli-v2/bosh-cli* create-env ${deployment_dir}/${manifest_filename}.yml
+bosh-cli-v2/bosh-cli* create-env bosh-softlayer-tools/ci/templates/director-template.yml \
+                      --state ./director-state.json \
+                      -v SL_VM_PREFIX=${SL_VM_PREFIX} \
+                      -v SL_USERNAME=${SL_USERNAME} \
+                      -v SL_API_KEY=${SL_API_KEY} \
+                      -v SL_DATACENTER=${SL_DATACENTER} \
+                      -v SL_VLAN_PUBLIC=${SL_VLAN_PUBLIC} \
+                      -v SL_VLAN_PRIVATE=${SL_VLAN_PRIVATE} \
+                      -v DI_USERNAME=${DI_USERNAME} \
+                      -v DI_PASSWORD=${DI_PASSWORD} \
+                      -v HM_USERNAME=${HM_USERNAME} \
+                      -v HM_PASSWORD=${HM_PASSWORD} \
+                      -v DI_HM_USERNAME=${DI_HM_USERNAME} \
+                      -v DI_HM_PASSWORD=${DI_HM_PASSWORD} \
+                      -v PG_USERNAME=${PG_USERNAME} \
+                      -v PG_PASSWORD=${PG_PASSWORD} \
+                      -v NATS_USERNAME=${NATS_USERNAME} \
+                      -v NATS_PASSWORD=${NATS_PASSWORD} \
+                      -v BL_DIRECTOR_USERNAME=${BL_DIRECTOR_USERNAME} \
+                      -v BL_DIRECTOR_PASSWORD=${BL_DIRECTOR_PASSWORD} \
+                      -v BL_AGENT_USERNAME=${BL_AGENT_USERNAME} \
+                      -v BL_AGENT_PASSWORD=${BL_AGENT_PASSWORD} \
+                      --var-file ROOT_CERT=${certs_dir}/rootCA.pem \
+                      --var-file DIRECTOR_KEY=${certs_dir}/director.key \
+                      --var-file DIRECTOR_CERT=${certs_dir}/director.crt \
+                      --vars-store ./credentials.yml
 
 echo "trying to set target to director..."
 bosh-cli-v2/bosh-cli*  --ca-cert ${certs_dir}/rootCA.pem alias-env ${SL_VM_PREFIX} -e ${SL_VM_DOMAIN}
