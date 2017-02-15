@@ -35,6 +35,7 @@ mkdir -p $deployment_dir
 certs_dir="${deployment_dir}/certs"
 mkdir -p $certs_dir
 
+manifest_filename="director-manifest"
 
 SL_VM_DOMAIN=${SL_VM_PREFIX}.softlayer.com
 
@@ -90,7 +91,7 @@ chmod +x bosh-cli-v2/bosh-cli*
   function finish {
     echo "Final state of director deployment:"
     echo "====================================================================="
-    cat ${deployment_dir}/director-state.json
+    cat ${deployment_dir}/${manifest_filename}-state.json
     echo "====================================================================="
 
     echo "Director:"
@@ -137,7 +138,7 @@ bosh-cli-v2/bosh-cli* interpolate bosh-softlayer-tools/ci/templates/director-tem
                       --var-file ROOT_CERT=${certs_dir}/rootCA.pem \
                       --var-file DIRECTOR_KEY=${certs_dir}/director.key \
                       --var-file DIRECTOR_CERT=${certs_dir}/director.crt \
-                      |tee ${deployment_dir}/director-manifest.yml
+                      |tee ${deployment_dir}/${manifest_filename}.yml
 
 echo "Deploying director..."
 bosh-cli-v2/bosh-cli* create-env ${deployment_dir}/director-manifest.yml                
