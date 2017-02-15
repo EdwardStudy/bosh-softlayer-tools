@@ -35,7 +35,6 @@ mkdir -p $deployment_dir
 certs_dir="${deployment_dir}/certs"
 mkdir -p $certs_dir
 
-manifest_filename="director-manifest"
 
 SL_VM_DOMAIN=${SL_VM_PREFIX}.softlayer.com
 
@@ -85,8 +84,6 @@ EOL
 
 popd 
 
-
-cat ${deployment_dir}/${manifest_filename}.yml
 
 chmod +x bosh-cli-v2/bosh-cli* 
 
