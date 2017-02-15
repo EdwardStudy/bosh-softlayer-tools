@@ -93,7 +93,7 @@ chmod +x bosh-cli-v2/bosh-cli*
   function finish {
     echo "Final state of director deployment:"
     echo "====================================================================="
-    cat ${deployment_dir}/${manifest_filename}-state.json
+    cat ${deployment_dir}/director-state.json
     echo "====================================================================="
 
     echo "Director:"
@@ -115,7 +115,7 @@ echo "Using bosh-cli $(bosh-cli-v2/bosh-cli* -v)"
 echo "Deploying director..."
 
 bosh-cli-v2/bosh-cli* create-env bosh-softlayer-tools/ci/templates/director-template.yml \
-                      --state ./director-state.json \
+                      --state ${deployment_dir}/director-state.json \
                       -v SL_VM_PREFIX=${SL_VM_PREFIX} \
                       -v SL_USERNAME=${SL_USERNAME} \
                       -v SL_API_KEY=${SL_API_KEY} \
@@ -139,7 +139,7 @@ bosh-cli-v2/bosh-cli* create-env bosh-softlayer-tools/ci/templates/director-temp
                       --var-file ROOT_CERT=${certs_dir}/rootCA.pem \
                       --var-file DIRECTOR_KEY=${certs_dir}/director.key \
                       --var-file DIRECTOR_CERT=${certs_dir}/director.crt \
-                      --vars-store ./credentials.yml
+                      --vars-store ${deployment_dir}/credentials.yml
 
 echo "trying to set target to director..."
 bosh-cli-v2/bosh-cli*  --ca-cert ${certs_dir}/rootCA.pem alias-env ${SL_VM_PREFIX} -e ${SL_VM_DOMAIN}
