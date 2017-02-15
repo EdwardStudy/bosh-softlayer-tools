@@ -114,6 +114,7 @@ echo "Deploying director..."
 bosh-cli-v2/bosh-cli* create-env bosh-softlayer-tools/ci/templates/director-template.yml \
                       --state ${deployment_dir}/director-state.json \
                       -v SL_VM_PREFIX=${SL_VM_PREFIX} \
+                      -v SL_VM_DOMAIN=${SL_VM_DOMAIN} \
                       -v SL_USERNAME=${SL_USERNAME} \
                       -v SL_API_KEY=${SL_API_KEY} \
                       -v SL_DATACENTER=${SL_DATACENTER} \
