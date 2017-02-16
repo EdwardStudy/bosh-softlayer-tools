@@ -98,10 +98,8 @@ jobs:
         provider: local
         local:
           users:
-          - name: admin
-            password: ((DI_ADMIN_PASSWORD))
-          - name: hm
-            password: ((DI_HM_PASSWORD))
+          - {name: admin, password: ((DI_ADMIN_PASSWORD))}
+          - {name: hm,password: ((DI_HM_PASSWORD))}
 
     hm:
       ca_cert: ((ROOT_CERT))
@@ -133,7 +131,7 @@ cloud_provider:
 
   properties:
     softlayer: *softlayer
-    agent: {mbus: "https:/admin:((DI_ADMIN_PASSWORD))@((SL_VM_DOMAIN)):6868"}
+    agent: {mbus: "https://admin:((DI_ADMIN_PASSWORD))@((SL_VM_DOMAIN)):6868"}
     blobstore: {provider: local, path: /var/vcap/micro_bosh/data/cache}
     ntp: *ntp
 
