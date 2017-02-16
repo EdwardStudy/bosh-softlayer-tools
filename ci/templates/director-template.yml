@@ -129,18 +129,18 @@ jobs:
       username: ((SL_USERNAME))
       apiKey: ((SL_API_KEY))
 
-    agent: {mbus: "nats://((NATS_USERNAME)):((NATS_PASSWORD))@((SL_VM_DOMAIN)):4222"}
+    agent: {mbus: "nats://nats:((NATS_PASSWORD))@((SL_VM_DOMAIN)):4222"}
 
     ntp: &ntp [0.pool.ntp.org, 1.pool.ntp.org]
 
 cloud_provider:
   template: {name: softlayer_cpi, release: bosh-softlayer-cpi}
 
-  mbus: https://((DI_USERNAME)):((DI_PASSWORD))@((SL_VM_DOMAIN)):6868
+  mbus: https://admin:((DI_ADMIN_PASSWORD))@((SL_VM_DOMAIN)):6868
 
   properties:
     softlayer: *softlayer
-    agent: {mbus: "https://((DI_USERNAME)):((DI_PASSWORD))@((SL_VM_DOMAIN)):6868"}
+    agent: {mbus: "https:/admin:((DI_ADMIN_PASSWORD))@((SL_VM_DOMAIN)):6868"}
     blobstore: {provider: local, path: /var/vcap/micro_bosh/data/cache}
     ntp: *ntp
 
