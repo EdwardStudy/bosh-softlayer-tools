@@ -155,7 +155,14 @@ variables:
   type: password
 - name: ROOT_CERT
   type: certificate
+  options:
+    is_ca: true
+    common_name: ca
 - name: DIRECTOR_CERT
   type: certificate
+    options:
+    ca: default_ca
+    common_name: ((SL_VM_DOMAIN))
+    alternative_names: [((SL_VM_DOMAIN))]
 
 
