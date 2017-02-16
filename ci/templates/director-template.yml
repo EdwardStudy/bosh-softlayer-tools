@@ -3,17 +3,14 @@ name: bosh
 
 releases:
 - name: bosh
-  type: password
   url: https://bosh.io/d/github.com/cloudfoundry/bosh?v=260.6
   sha1: 1506526f39f7406d97ac6edc7601e1c29fce5df5
-- name: bosh
-  type: password
+- name: bosh-softlayer-cpi
   url: https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-softlayer-cpi-release?v=3.0.5
   sha1: e7eac102bf24b5c80574ffd287dff429bc8f0cd9
 
 resource_pools:
 - name: vms
-  type: password
   network: default
   stemcell:
     url: https://bosh.io/d/stemcells/bosh-softlayer-xen-ubuntu-trusty-go_agent?v=3312.17
@@ -38,18 +35,15 @@ resource_pools:
 
 disk_pools:
 - name: disks
-  type: password
   disk_size: 20_000
 
 networks:
 - name: default
-  type: password
   type: dynamic
   dns: [8.8.8.8]
 
 jobs:
 - name: bosh
-  type: password
   instances: 1
 
   templates:
@@ -66,7 +60,6 @@ jobs:
 
   networks:
   - name: default
-  type: password
 
   properties:
     nats:
