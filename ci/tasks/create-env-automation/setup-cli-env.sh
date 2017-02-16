@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -e -x
 source bosh-softlayer-tools/ci/tasks/utils.sh
 
 check_param SL_USERNAME
@@ -79,7 +79,6 @@ cat >add-private-key.sh<<EOF
 #!/usr/bin/expect -f
 #
 # Install RSA SSH KEY with no passphrase
-#
 set user [lindex \$argv 0]
 set host [lindex \$argv 1]
 set password [lindex \$argv 2]
@@ -98,15 +97,15 @@ chmod +x ./add-private-key.sh
 cat >post-setup.sh <<EOF
 #!/usr/bin/env bash
 set -e
-mkdir ~/deployment
+mkdir -p ~/deployment
 tar zxvf /tmp/director_artifacts.tgz -C ~/deployment
 cat ~/deployment/director-info >> /etc/hosts
 chmod +X ~/deployment/bosh-cli*
 echo "Trying to set target to director..."
-~/deployment/bosh-cli*  -e  \$(cat ~/deployment/director-info |awk '{print $2}') --ca-cert <(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test 
+~/deployment/bosh-cli* -e \$(cat ~/deployment/director-info |awk '{print \$2}') --ca-cert <(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test 
 echo "Trying to login to director..."
 export BOSH_CLIENT=admin
-export BOSH_CLIENT_SECRET=$(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DI_ADMIN_PASSWORD)
+export BOSH_CLIENT_SECRET=\$(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DI_ADMIN_PASSWORD)
 ~/deployment/bosh-cli* -e bosh-test login
 EOF
 chmod +x post-setup.sh
