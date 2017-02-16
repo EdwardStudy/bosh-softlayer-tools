@@ -3,14 +3,17 @@ name: bosh
 
 releases:
 - name: bosh
+  type: password
   url: https://bosh.io/d/github.com/cloudfoundry/bosh?v=260.6
   sha1: 1506526f39f7406d97ac6edc7601e1c29fce5df5
-- name: bosh-softlayer-cpi
+- name: bosh
+  type: password
   url: https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-softlayer-cpi-release?v=3.0.5
   sha1: e7eac102bf24b5c80574ffd287dff429bc8f0cd9
 
 resource_pools:
 - name: vms
+  type: password
   network: default
   stemcell:
     url: https://bosh.io/d/stemcells/bosh-softlayer-xen-ubuntu-trusty-go_agent?v=3312.17
@@ -35,15 +38,18 @@ resource_pools:
 
 disk_pools:
 - name: disks
+  type: password
   disk_size: 20_000
 
 networks:
 - name: default
+  type: password
   type: dynamic
   dns: [8.8.8.8]
 
 jobs:
 - name: bosh
+  type: password
   instances: 1
 
   templates:
@@ -60,17 +66,18 @@ jobs:
 
   networks:
   - name: default
+  type: password
 
   properties:
     nats:
       address: 127.0.0.1
-      user: ((NATS_USERNAME))
+      user: nats
       password: ((NATS_PASSWORD))
 
     postgres: &db
       listen_address: 127.0.0.1
       host: 127.0.0.1
-      user: ((PG_USERNAME))
+      user: postgres
       password: ((PG_PASSWORD))
       database: bosh
       adapter: postgres
@@ -80,10 +87,10 @@ jobs:
       port: 25250
       provider: dav
       director:
-        user: ((BL_DIRECTOR_USERNAME))
+        user: director
         password: ((BL_DIRECTOR_PASSWORD))
       agent:
-        user: ((BL_AGENT_USERNAME))
+        user: agent
         password: ((BL_AGENT_PASSWORD))
 
     director:
@@ -98,14 +105,16 @@ jobs:
         provider: local
         local:
           users:
-          - {name: ((DI_USERNAME)), password: ((DI_PASSWORD))}
-          - {name: ((DI_HM_USERNAME)), password: ((DI_HM_PASSWORD))} 
+          - name: admin
+            password: ((DI_ADMIN_PASSWORD))
+          - name: hm
+            password: ((DI_HM_PASSWORD))
 
     hm:
       ca_cert: ((ROOT_CERT))
       director_account:
-        user: ((HM_USERNAME))
-        password: ((HM_PASSWORD))
+        user: hm
+        password: ((DI_HM_PASSWORD))
       resurrector_enabled: true
 
     dns:
@@ -134,5 +143,25 @@ cloud_provider:
     agent: {mbus: "https://((DI_USERNAME)):((DI_PASSWORD))@((SL_VM_DOMAIN)):6868"}
     blobstore: {provider: local, path: /var/vcap/micro_bosh/data/cache}
     ntp: *ntp
+
+variables:
+- name: SL_API_KEY:
+  type: password
+- name: DI_ADMIN_PASSWORD:
+  type: password
+- name: DI_HM_PASSWORD:
+  type: password
+- name: PG_PASSWORD:
+  type: password
+- name: NATS_PASSWORD:
+  type: password
+- name: BL_DIRECTOR_PASSWORD:
+  type: password
+- name: BL_AGENT_PASSWORD:
+  type: password
+- name: ROOT_CERT
+  type: certificate
+- name: DIRECTOR_CERT
+  type: certificate
 
 

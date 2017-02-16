@@ -12,19 +12,11 @@ check_param SL_API_KEY
 check_param SL_DATACENTER
 check_param SL_VLAN_PUBLIC
 check_param SL_VLAN_PRIVATE
-check_param DI_USERNAME
-check_param DI_PASSWORD
-check_param HM_USERNAME
-check_param HM_PASSWORD
-check_param DI_HM_USERNAME
+check_param DI_ADMIN_PASSWORD
 check_param DI_HM_PASSWORD
-check_param PG_USERNAME
 check_param PG_PASSWORD
-check_param NATS_USERNAME
 check_param NATS_PASSWORD
-check_param BL_DIRECTOR_USERNAME
 check_param BL_DIRECTOR_PASSWORD
-check_param BL_AGENT_USERNAME
 check_param BL_AGENT_PASSWORD
 
 echo "Start generating certifications...."
@@ -121,19 +113,11 @@ bosh-cli-v2/bosh-cli* create-env bosh-softlayer-tools/ci/templates/director-temp
                       -v SL_DATACENTER=${SL_DATACENTER} \
                       -v SL_VLAN_PUBLIC=${SL_VLAN_PUBLIC} \
                       -v SL_VLAN_PRIVATE=${SL_VLAN_PRIVATE} \
-                      -v DI_USERNAME=${DI_USERNAME} \
-                      -v DI_PASSWORD=${DI_PASSWORD} \
-                      -v HM_USERNAME=${HM_USERNAME} \
-                      -v HM_PASSWORD=${HM_PASSWORD} \
-                      -v DI_HM_USERNAME=${DI_HM_USERNAME} \
+                      -v DI_ADMIN_PASSWORD=${DI_PASSWORD} \
                       -v DI_HM_PASSWORD=${DI_HM_PASSWORD} \
-                      -v PG_USERNAME=${PG_USERNAME} \
                       -v PG_PASSWORD=${PG_PASSWORD} \
-                      -v NATS_USERNAME=${NATS_USERNAME} \
                       -v NATS_PASSWORD=${NATS_PASSWORD} \
-                      -v BL_DIRECTOR_USERNAME=${BL_DIRECTOR_USERNAME} \
                       -v BL_DIRECTOR_PASSWORD=${BL_DIRECTOR_PASSWORD} \
-                      -v BL_AGENT_USERNAME=${BL_AGENT_USERNAME} \
                       -v BL_AGENT_PASSWORD=${BL_AGENT_PASSWORD} \
                       --var-file ROOT_CERT=${certs_dir}/rootCA.pem \
                       --var-file DIRECTOR_KEY=${certs_dir}/director.key \
