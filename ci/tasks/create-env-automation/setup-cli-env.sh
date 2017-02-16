@@ -52,7 +52,7 @@ while true
 
 
 function finish {
-    echo "howing full vm info"
+    echo "Showing full vm info"
     slcli vs detail $CLI_VM_ID --passwords
 }
 
@@ -103,7 +103,7 @@ tar zxvf /tmp/director_artifacts.tgz -C ~/deployment
 cat ~/deployment/director-info >> /etc/hosts
 chmod +X ~/deployment/bosh-cli*
 echo "Trying to set target to director..."
-~/deployment/bosh-cli*  -e  $(cat ~/deployment/director-info |awk '{print $2}') --ca-cert <(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test 
+~/deployment/bosh-cli*  -e  \$(cat ~/deployment/director-info |awk '{print $2}') --ca-cert <(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test 
 echo "Trying to login to director..."
 export BOSH_CLIENT=admin
 export BOSH_CLIENT_SECRET=$(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DI_ADMIN_PASSWORD)
