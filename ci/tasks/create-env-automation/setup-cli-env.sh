@@ -5,8 +5,9 @@ source bosh-softlayer-tools/ci/tasks/utils.sh
 check_param SL_USERNAME
 check_param SL_API_KEY
 check_param SL_DATACENTER
-
-apt-get update && apt-get install -y  python-pip python-dev build-essential expect > /dev/null 2>&1 
+#TODO: create a docker image to avoid the installation.
+apt-get update > /dev/null 2>&1  
+apt-get install -y python-pip python-dev build-essential expect > /dev/null 2>&1  
 
 python -V
 
@@ -108,10 +109,10 @@ export BOSH_CLIENT=admin
 export BOSH_CLIENT_SECRET=$(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DI_ADMIN_PASSWORD)
 ~/deployment/bosh-cli* -e bosh-test login
 EOF
+chmod +x post-setup.sh
 
 scp -i key.rsa director-artifacts/director_artifacts.tgz root@$CLI_VM_IP:/tmp/director_artifacts.tgz
-scp -i post-setup.sh root@$CLI_VM_IP:/tmp/post-setup.sh
-
+scp -i key.rsa post-setup.sh root@$CLI_VM_IP:/tmp/post-setup.sh
 ssh -i key.rsa root@$CLI_VM_IP '/tmp/post-setup.sh'
 
 trap - ERR
