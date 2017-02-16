@@ -113,7 +113,7 @@ bosh-cli-v2/bosh-cli* create-env bosh-softlayer-tools/ci/templates/director-temp
                       -v SL_DATACENTER=${SL_DATACENTER} \
                       -v SL_VLAN_PUBLIC=${SL_VLAN_PUBLIC} \
                       -v SL_VLAN_PRIVATE=${SL_VLAN_PRIVATE} \
-                      -v DI_ADMIN_PASSWORD=${DI_PASSWORD} \
+                      -v DI_ADMIN_PASSWORD=${DI_ADMIN_PASSWORD} \
                       -v DI_HM_PASSWORD=${DI_HM_PASSWORD} \
                       -v PG_PASSWORD=${PG_PASSWORD} \
                       -v NATS_PASSWORD=${NATS_PASSWORD} \
