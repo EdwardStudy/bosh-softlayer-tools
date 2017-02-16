@@ -8,7 +8,7 @@ check_param SL_DATACENTER
 
 apt-get update && apt-get install -y  python-pip python-dev build-essential expect > /dev/null 2>&1 
 
-echo "Using $(python -V)"
+python -V
 
 echo "Downloading SoftLayer CLI..."
 
@@ -93,9 +93,10 @@ EOF
 chmod +x ./add-private-key.sh
 ./add-private-key.sh root $CLI_VM_IP $CLI_VM_PWD
 
-scp -i key.rsa director-artifacts/director_artifacts.tgz root@$CLI_VM_IP:/tmp/director_artifacts.tgz
 
-ssh -i key.rsa root@$CLI_VM_IP <<EOF
+cat >post-setup.sh <<EOF
+#!/usr/bin/env bash
+set -e
 mkdir ~/deployment
 tar zxvf /tmp/director_artifacts.tgz -C ~/deployment
 cat ~/deployment/director-info >> /etc/hosts
@@ -107,6 +108,11 @@ export BOSH_CLIENT=admin
 export BOSH_CLIENT_SECRET=$(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DI_ADMIN_PASSWORD)
 ~/deployment/bosh-cli* -e bosh-test login
 EOF
+
+scp -i key.rsa director-artifacts/director_artifacts.tgz root@$CLI_VM_IP:/tmp/director_artifacts.tgz
+scp -i post-setup.sh root@$CLI_VM_IP:/tmp/post-setup.sh
+
+ssh -i key.rsa root@$CLI_VM_IP '/tmp/post-setup.sh'
 
 trap - ERR
 
