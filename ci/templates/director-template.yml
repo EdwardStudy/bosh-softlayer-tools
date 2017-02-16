@@ -144,20 +144,21 @@ cloud_provider:
     blobstore: {provider: local, path: /var/vcap/micro_bosh/data/cache}
     ntp: *ntp
 
+
 variables:
-- name: SL_API_KEY:
+- name: SL_API_KEY
   type: password
-- name: DI_ADMIN_PASSWORD:
+- name: DI_ADMIN_PASSWORD
   type: password
-- name: DI_HM_PASSWORD:
+- name: DI_HM_PASSWORD
   type: password
-- name: PG_PASSWORD:
+- name: PG_PASSWORD
   type: password
-- name: NATS_PASSWORD:
+- name: NATS_PASSWORD
   type: password
-- name: BL_DIRECTOR_PASSWORD:
+- name: BL_DIRECTOR_PASSWORD
   type: password
-- name: BL_AGENT_PASSWORD:
+- name: BL_AGENT_PASSWORD
   type: password
 - name: ROOT_CERT
   type: certificate
