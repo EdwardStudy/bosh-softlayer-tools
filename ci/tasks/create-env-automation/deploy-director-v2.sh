@@ -12,71 +12,12 @@ check_param SL_API_KEY
 check_param SL_DATACENTER
 check_param SL_VLAN_PUBLIC
 check_param SL_VLAN_PRIVATE
-check_param DI_ADMIN_PASSWORD
-check_param DI_HM_PASSWORD
-check_param PG_PASSWORD
-check_param NATS_PASSWORD
-check_param BL_DIRECTOR_PASSWORD
-check_param BL_AGENT_PASSWORD
 
-echo "Start generating certifications...."
 
 deployment_dir="${PWD}/deployment"
 mkdir -p $deployment_dir
 
-certs_dir="${deployment_dir}/certs"
-mkdir -p $certs_dir
-
-manifest_filename="director-manifest"
-
 SL_VM_DOMAIN=${SL_VM_PREFIX}.softlayer.com
-
-# pushd $certs_dir
-
-#   echo "Generating root CA..."
-#   openssl genrsa -out rootCA.key 2048 yes ""  >/dev/null 2>&1
-
-#   openssl req -x509 -new -nodes -key rootCA.key -out rootCA.pem -days 99999 -subj "/C=US/O=BOSH/CN=${SL_VM_DOMAIN}" >/dev/null 2>&1
-
-#   cat rootCA.pem
-
-#   function generateCert {
-#     name=$1
-#     domain=$2
-#     cat >openssl-exts.conf <<-EOL
-#   extensions = san
-
-#   [ alternate_names ]
-#   DNS.1        = ${domain}
-
-#   [san]
-#   subjectAltName    = @alternate_names
-# EOL
-
-#     echo "Generating private key for ${domain}... "
-#     openssl genrsa -out ${name}.key 2048  >/dev/null 2>&1
-
-#     echo "Generating certificate signing request for ${domain}..."
-#     # golang requires to have SAN for the IP
-#     openssl req -new -nodes -key ${name}.key \
-#       -out ${name}.csr \
-#       -subj "/C=US/O=BOSH/CN=${domain}" >/dev/null 2>&1
-
-#     echo "Generating certificate for ${domain}..."
-#     openssl x509 -req -in ${name}.csr \
-#       -CA rootCA.pem -CAkey rootCA.key -CAcreateserial \
-#       -out ${name}.crt -days 99999 \
-#       -extfile ./openssl-exts.conf  >/dev/null 2>&1
-
-#     echo "Deleting certificate signing request and config..."
-#     rm ${name}.csr
-#     rm ./openssl-exts.conf
-#   }
-
-#   generateCert director ${SL_VM_DOMAIN}
-
-# popd 
-
 
 chmod +x bosh-cli-v2/bosh-cli* 
 
@@ -101,7 +42,7 @@ chmod +x bosh-cli-v2/bosh-cli*
 trap finish ERR
 
 echo "Using bosh-cli $(bosh-cli-v2/bosh-cli* -v)"
-echo "Generating director manifest file..."
+echo "Deploying director..."
 
 bosh-cli-v2/bosh-cli* create-env bosh-softlayer-tools/ci/templates/director-template.yml \
                       --vars-store ${deployment_dir}/credentials.yml \
@@ -112,27 +53,24 @@ bosh-cli-v2/bosh-cli* create-env bosh-softlayer-tools/ci/templates/director-temp
                       -v SL_API_KEY=${SL_API_KEY} \
                       -v SL_DATACENTER=${SL_DATACENTER} \
                       -v SL_VLAN_PUBLIC=${SL_VLAN_PUBLIC} \
-                      -v SL_VLAN_PRIVATE=${SL_VLAN_PRIVATE} \
-                      -v DI_ADMIN_PASSWORD=${DI_ADMIN_PASSWORD} \
-                      -v DI_HM_PASSWORD=${DI_HM_PASSWORD} \
-                      -v PG_PASSWORD=${PG_PASSWORD} \
-                      -v NATS_PASSWORD=${NATS_PASSWORD} \
-                      -v BL_DIRECTOR_PASSWORD=${BL_DIRECTOR_PASSWORD} \
-                      -v BL_AGENT_PASSWORD=${BL_AGENT_PASSWORD}
+                      -v SL_VLAN_PRIVATE=${SL_VLAN_PRIVATE}
                       
-# echo "Deploying director..."
-# bosh-cli-v2/bosh-cli* create-env ${deployment_dir}/director-manifest.yml                
-
 echo "Trying to set target to director..."
 
 
-bosh-cli-v2/bosh-cli*  --ca-cert \
-                       <(bosh-cli-v2/bosh-cli* int ${deployment_dir}/credentials.yml --path /DIRECTOR_SSL/ca )\ 
-                        alias-env bosh-test -e ${SL_VM_DOMAIN}
+bosh-cli-v2/bosh-cli*  -e ${SL_VM_DOMAIN} --ca-cert <(bosh-cli-v2/bosh-cli* int ${deployment_dir}/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test 
+
+echo "Trying to login to director..."
+
+export BOSH_CLIENT=admin
+export BOSH_CLIENT_SECRET=`bosh-cli-v2/bosh-cli* ${deployment_dir}/credentials.yml --path /DI_ADMIN_PASSWORD`
+
+bosh-cli-v2/bosh-cli*  -e bosh-test login
 
 trap - ERR
 
 finish
+
 
 
 
