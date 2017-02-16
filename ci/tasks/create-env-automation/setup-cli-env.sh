@@ -27,10 +27,9 @@ EOF
 slcli -y vs create -H bosh-cli-v2-env -D softlayer.com \
         -c 2 -m 2048 -d ${SL_DATACENTER} -o UBUNTU_LATEST > cli_vm_info
 
-
 CLI_VM_ID=$(grep -w id cli_vm_info|awk '{print $2}')
 
-echo "CLI vm id : $CLI_VM_ID"
+echo "SoftLayer VM ID: $CLI_VM_ID"
 
 while true
     do
@@ -50,25 +49,30 @@ while true
         sleep 20
     done
 
-echo "showing full vm info"
-slcli vs detail $CLI_VM_ID --passwords
+
+function finish {
+    echo "howing full vm info"
+    slcli vs detail $CLI_VM_ID --passwords
+}
+
+trap finish ERR
 
 CLI_VM_IP=$(grep -w public_ip cli_vm_detail|awk '{print $2}')
-
 CLI_VM_PWD=$(slcli vs credentials $CLI_VM_ID|grep -w root|awk '{print $2}')
 
 #Collect info of cli vm and send to s3
-
 cat >CLI_VM_INFO<<EOF
 ip $CLI_VM_IP
 password $CLI_VM_PWD
 EOF
 
-cp ./CLI_VM_INFO cli-vm-info/
-
 echo "Generating ssh private key..."
 
 ssh-keygen -f key.rsa -t rsa -N ''
+
+tar zcvf CLI_VM_INFO.tgz CLI_VM_INFO key.rsa
+
+cp CLI_VM_INFO.tgz cli-vm-info/
 
 cat >add-private-key.sh<<EOF
 #!/usr/bin/expect -f
@@ -92,12 +96,21 @@ chmod +x ./add-private-key.sh
 scp -i key.rsa director-artifacts/director_artifacts.tgz root@$CLI_VM_IP:/tmp/director_artifacts.tgz
 
 ssh -i key.rsa root@$CLI_VM_IP <<EOF
-uname -a
-mkdir deployment
-tar zxvf /tmp/director_artifacts.tgz -C ./deployment
-cat ./deployment/director-info >> /etc/hosts
-chmod +X /deployment/bosh-cli*
+mkdir ~/deployment
+tar zxvf /tmp/director_artifacts.tgz -C ~/deployment
+cat ~/deployment/director-info >> /etc/hosts
+chmod +X ~/deployment/bosh-cli*
+echo "Trying to set target to director..."
+~/deployment/bosh-cli*  -e ${SL_VM_DOMAIN} --ca-cert <(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test 
+echo "Trying to login to director..."
+export BOSH_CLIENT=admin
+export BOSH_CLIENT_SECRET=$(b~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DI_ADMIN_PASSWORD
+bosh-cli-v2/bosh-cli* -e bosh-test login
 EOF
+
+trap - ERR
+
+finish
 
 
 

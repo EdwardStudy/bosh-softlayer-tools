@@ -6,7 +6,6 @@ inputs:
 - name: director-artifacts
 - name: bosh-softlayer-tools
 
-
 outputs:
 - name: cli-vm-info
 
