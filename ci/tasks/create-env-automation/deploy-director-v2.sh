@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eu
+set -e
 
 source bosh-softlayer-tools/ci/tasks/utils.sh
 source /etc/profile.d/chruby.sh
