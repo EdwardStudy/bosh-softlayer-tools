@@ -6,13 +6,13 @@ check_param SL_USERNAME
 check_param SL_API_KEY
 check_param SL_DATACENTER
 
-apt-get update && apt-get install -y  python-pip python-dev build-essential expect >> /dev/null
+apt-get update && apt-get install -y  python-pip python-dev build-essential expect > /dev/null 2>&1 
 
 echo "Using $(python -V)"
 
 echo "Downloading SoftLayer CLI..."
 
-pip install SoftLayer 2>&1 >> /dev/null
+pip install SoftLayer  >/dev/null 2>&1
 
 echo "Using $(slcli --version)"
 
@@ -101,11 +101,11 @@ tar zxvf /tmp/director_artifacts.tgz -C ~/deployment
 cat ~/deployment/director-info >> /etc/hosts
 chmod +X ~/deployment/bosh-cli*
 echo "Trying to set target to director..."
-~/deployment/bosh-cli*  -e ${SL_VM_DOMAIN} --ca-cert <(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test 
+~/deployment/bosh-cli*  -e  $(cat ~/deployment/director-info |awk '{print $2}') --ca-cert <(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test 
 echo "Trying to login to director..."
 export BOSH_CLIENT=admin
-export BOSH_CLIENT_SECRET=$(b~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DI_ADMIN_PASSWORD
-bosh-cli-v2/bosh-cli* -e bosh-test login
+export BOSH_CLIENT_SECRET=$(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DI_ADMIN_PASSWORD)
+~/deployment/bosh-cli* -e bosh-test login
 EOF
 
 trap - ERR
