@@ -83,9 +83,8 @@ chmod +x bosh-cli-v2/bosh-cli*
   function finish {
     echo "Final state of director deployment:"
     echo "====================================================================="
-    # cat ${deployment_dir}/${manifest_filename}-state.json
+     cat ${deployment_dir}/director-deployment-state.json
     echo "====================================================================="
-
     echo "Director:"
     echo "====================================================================="
     cat /etc/hosts | grep "$SL_VM_DOMAIN" | tee ${deployment_dir}/director-info
@@ -125,7 +124,11 @@ bosh-cli-v2/bosh-cli* create-env bosh-softlayer-tools/ci/templates/director-temp
 # bosh-cli-v2/bosh-cli* create-env ${deployment_dir}/director-manifest.yml                
 
 echo "Trying to set target to director..."
-bosh-cli-v2/bosh-cli*  --ca-cert ${certs_dir}/rootCA.pem alias-env ${SL_VM_PREFIX} -e ${SL_VM_DOMAIN}
+
+
+bosh-cli-v2/bosh-cli*  --ca-cert \
+                       <(bosh-cli-v2/bosh-cli* int ${deployment_dir}/credentials.yml --path /DIRECTOR_SSL/ca )\ 
+                        alias-env bosh-test -e ${SL_VM_DOMAIN}
 
 trap - ERR
 
