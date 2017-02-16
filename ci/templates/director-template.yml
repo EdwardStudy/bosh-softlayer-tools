@@ -88,8 +88,8 @@ jobs:
 
     director:
       ssl:
-        key: ((DIRECTOR_KEY))
-        cert: ((DIRECTOR_CERT))
+        key: ((DIRECTOR_SSL.private_key))
+        cert: ((DIRECTOR_SSL.certificate))
       address: 127.0.0.1
       name: bosh
       cpi_job: softlayer_cpi
@@ -158,10 +158,10 @@ variables:
   options:
     is_ca: true
     common_name: ca
-- name: DIRECTOR_CERT
+- name: DIRECTOR_SSL
   type: certificate
   options:
-    ca: default_ca
+    ca: ROOT_CERT
     common_name: ((SL_VM_DOMAIN))
     alternative_names: [((SL_VM_DOMAIN))]
 
