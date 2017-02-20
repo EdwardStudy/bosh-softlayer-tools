@@ -32,7 +32,7 @@ check_param  cf_services_contrib_release_version
 deployment_dir="${PWD}/deployment"
 mkdir -p $deployment_dir
 
-tar -zxvf deploy-artifacts/director_artifacts.tgz -C ./
+tar -zxvf director-artifacts/director_artifacts.tgz -C {deployment_dir}
 {deployment_dir}/bosh-cli* -e $(cat {deployment_dir}/director-info |awk '{print \$2}') --ca-cert <({deployment_dir}/bosh-cli* int {deployment_dir}/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test 
 echo "Trying to login to director..."
 export BOSH_CLIENT=admin
