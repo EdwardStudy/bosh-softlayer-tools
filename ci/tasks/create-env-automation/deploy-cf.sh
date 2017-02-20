@@ -4,7 +4,7 @@ source bosh-softlayer-tools/ci/tasks/utils.sh
 
 check_param bluemix_env_domain
 check_param bosh_dns
-check_param vm_name_prefix
+check_param deploy_name
 check_param data_center_name
 check_param private_vlan_id
 check_param public_vlan_id
@@ -34,14 +34,14 @@ director_pub_ip=$(grep public_ip ${deployment_dir}/director-detail|awk '{print $
 director_uuid=$(grep -Po '(?<=director_id": ")[^"]*' ${deployment_dir}/director-deploy-state.json)
 
 # generate cf deployment yml file
-
+f
 ${deployment_dir}/bosh-cli* interpolate cf-template/cf-template.yml \
 							-v bluemix_env_domain=${bluemix_env_domain}\
 							-v director_ip=${director_ip}\
 							-v director_pub_ip=${director_pub_ip}\
 							-v bosh_dns=${bosh_dns}\
 							-v director_uuid=${director_uuid}\
-							-v vm_name_prefix=${vm_name_prefix}\
+							-v deploy_name=${deploy_name}\
 							-v data_center_name=${data_center_name}\
 							-v private_vlan_id=${private_vlan_id}\
 							-v public_vlan_id=${public_vlan_id}\
