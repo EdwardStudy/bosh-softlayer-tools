@@ -74,12 +74,12 @@ bosh-cli-v2/bosh-cli* create-env bosh-softlayer-tools/ci/templates/director-temp
 
 echo "Trying to set target to director..."
 
-bosh-cli-v2/bosh-cli*  -e ${SL_VM_DOMAIN} --ca-cert <(bosh-cli-v2/bosh-cli* int ${deployment_dir}/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test 
+bosh-cli-v2/bosh-cli*  -e ${SL_VM_DOMAIN} --ca-cert <(bosh-cli-v2/bosh-cli* int ${deployment_dir}/credentials.yml --path /DIRECTOR_SSL/ca) alias-env bosh-test 
 
 echo "Trying to login to director..."
 
 export BOSH_CLIENT=admin
-export BOSH_CLIENT_SECRET=$(bosh-cli-v2/bosh-cli* int ${deployment_dir}/credentials.yml --path /DI_ADMIN_PASSWORD
+export BOSH_CLIENT_SECRET=$(bosh-cli-v2/bosh-cli* int ${deployment_dir}/credentials.yml --path /DI_ADMIN_PASSWORD)
 
 bosh-cli-v2/bosh-cli* -e bosh-test login
 

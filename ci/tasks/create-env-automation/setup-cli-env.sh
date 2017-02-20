@@ -99,7 +99,7 @@ cat >post-setup.sh <<EOF
 set -e
 mkdir -p ~/deployment
 tar zxvf /tmp/director_artifacts.tgz -C ~/deployment
-cat ~/deployment/director-info >> /etc/hosts
+cat ~/deployment/director-hosts >> /etc/hosts
 chmod +X ~/deployment/bosh-cli*
 echo "Trying to set target to director..."
 ~/deployment/bosh-cli* -e \$(cat ~/deployment/director-info |awk '{print \$2}') --ca-cert <(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test 

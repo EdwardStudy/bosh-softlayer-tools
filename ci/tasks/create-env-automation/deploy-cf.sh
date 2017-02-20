@@ -3,10 +3,7 @@ set -e -x
 source bosh-softlayer-tools/ci/tasks/utils.sh
 
 check_param bluemix_env_domain
-check_param director_ip
-check_param director_pub_ip
 check_param bosh_dns
-check_param director_uuid
 check_param vm_name_prefix
 check_param data_center_name
 check_param private_vlan_id
@@ -24,12 +21,17 @@ deployment_dir="${PWD}/deployment"
 mkdir -p $deployment_dir
 
 tar -zxvf director-artifacts/director_artifacts.tgz -C ${deployment_dir}
-cat ${deployment_dir}/director-info >> /etc/hosts
+cat ${deployment_dir}/director-hosts >> /etc/hosts
 ${deployment_dir}/bosh-cli* -e $(cat ${deployment_dir}/director-info |awk '{print $2}') --ca-cert <(${deployment_dir}/bosh-cli* int ${deployment_dir}/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test 
 echo "Trying to login to director..."
 export BOSH_CLIENT=admin
 export BOSH_CLIENT_SECRET=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/credentials.yml --path /DI_ADMIN_PASSWORD)
 ${deployment_dir}/bosh-cli* -e bosh-test login
+
+
+director_ip=grep private_ip ${deployment_dir}/director-detail|awk '{print $2}'
+director_pub_ip=grep public_ip ${deployment_dir}/director-detail|awk '{print $2}'
+director_uuid=grep -Po '(?<=director_id": ")[^"]*' ${deployment_dir}/director-deploy-state.json
 
 # generate cf deployment yml file
 
@@ -52,6 +54,7 @@ ${deployment_dir}/bosh-cli* interpolate cf-template/cf-template.yml \
 							-v cf_services_contrib_release=${cf_services_contrib_release}\
 							-v cf_services_contrib_release_version=${cf_services_contrib_release_version}\
 						    > ${deployment_dir}/cf-deploy.yml
+
 
 
 echo "done">cf-info/cf-info
