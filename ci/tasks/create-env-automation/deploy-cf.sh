@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -e -x
 source bosh-softlayer-tools/ci/tasks/utils.sh
 
 check_param  bluemix_env_name
@@ -33,6 +33,7 @@ deployment_dir="${PWD}/deployment"
 mkdir -p $deployment_dir
 
 tar -zxvf director-artifacts/director_artifacts.tgz -C ${deployment_dir}
+cat ${deployment_dir}/director-info >> /etc/hosts
 ${deployment_dir}/bosh-cli* -e $(cat ${deployment_dir}/director-info |awk '{print $2}') --ca-cert <(${deployment_dir}/bosh-cli* int ${deployment_dir}/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test 
 echo "Trying to login to director..."
 export BOSH_CLIENT=admin
