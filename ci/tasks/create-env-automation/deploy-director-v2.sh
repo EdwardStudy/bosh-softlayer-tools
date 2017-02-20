@@ -40,14 +40,14 @@ chmod +x bosh-cli-v2/bosh-cli*
   function finish {
     echo "Final state of director deployment:"
     echo "====================================================================="
-     cat ${deployment_dir}/director-deployment-state.json
+    cat ${deployment_dir}/deploy-state.json
     echo "====================================================================="
     echo "Director:"
     echo "====================================================================="
     cat /etc/hosts | grep "$SL_VM_DOMAIN" | tee ${deployment_dir}/director-hosts
     echo "====================================================================="
     echo "Saving config..."
-    DIRECTOR_VM_ID=grep -Po '(?<=current_vm_cid": ")[^"]*' ${deployment_dir}/deploy-director-state.json
+    DIRECTOR_VM_ID=grep -Po '(?<=current_vm_cid": ")[^"]*' ${deployment_dir}/deploy-state.json
     slcli vs detail ${DIRECTOR_VM_ID} > ${deployment_dir}/director-detail
     cp bosh-cli-v2/bosh-cli* ${deployment_dir}/
     pushd ${deployment_dir}
@@ -61,7 +61,8 @@ trap finish ERR
 echo "Using bosh-cli $(bosh-cli-v2/bosh-cli* -v)"
 echo "Deploying director..."
 
-bosh-cli-v2/bosh-cli* int bosh-softlayer-tools/ci/templates/director-template.yml \
+bosh-cli-v2/bosh-cli* create-env bosh-softlayer-tools/ci/templates/director-template.yml \
+                      --state=${deployment_dir}/deploy-state.json\
                       --vars-store ${deployment_dir}/credentials.yml \
                       -v SL_VM_PREFIX=${SL_VM_PREFIX} \
                       -v SL_VM_DOMAIN=${SL_VM_DOMAIN} \
@@ -71,9 +72,6 @@ bosh-cli-v2/bosh-cli* int bosh-softlayer-tools/ci/templates/director-template.ym
                       -v SL_VLAN_PUBLIC=${SL_VLAN_PUBLIC} \
                       -v SL_VLAN_PRIVATE=${SL_VLAN_PRIVATE}\
                       > ${deployment_dir}/deploy-director.yml
-
-bosh-cli-v2/bosh-cli* create-env ${deployment_dir}/deploy-director.yml             
-
 
 echo "Trying to set target to director..."
 
