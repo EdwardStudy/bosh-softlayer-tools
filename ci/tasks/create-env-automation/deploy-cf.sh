@@ -29,9 +29,9 @@ export BOSH_CLIENT_SECRET=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cr
 ${deployment_dir}/bosh-cli* -e bosh-test login
 
 
-director_ip=${grep private_ip ${deployment_dir}/director-detail|awk '{print $2}'}
-director_pub_ip=${grep public_ip ${deployment_dir}/director-detail|awk '{print $2}'}
-director_uuid=${grep -Po '(?<=director_id": ")[^"]*' ${deployment_dir}/director-deploy-state.json}
+director_ip=$(grep private_ip ${deployment_dir}/director-detail|awk '{print $2}')
+director_pub_ip=$(grep public_ip ${deployment_dir}/director-detail|awk '{print $2}')
+director_uuid=$(grep -Po '(?<=director_id": ")[^"]*' ${deployment_dir}/director-deploy-state.json)
 
 # generate cf deployment yml file
 
