@@ -34,7 +34,6 @@ director_pub_ip=$(grep public_ip ${deployment_dir}/director-detail|awk '{print $
 director_uuid=$(grep -Po '(?<=director_id": ")[^"]*' ${deployment_dir}/director-deploy-state.json)
 
 # generate cf deployment yml file
-f
 ${deployment_dir}/bosh-cli* interpolate cf-template/cf-template.yml \
 							-v bluemix_env_domain=${bluemix_env_domain}\
 							-v director_ip=${director_ip}\
