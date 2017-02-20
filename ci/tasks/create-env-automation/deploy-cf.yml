@@ -14,30 +14,20 @@ outputs:
 - name: cf-info
 
 params:
-   bluemix_env_name:      replace-me
-   boshdns:               replace-me
-   bluemix_env_geo:       replace-me
-   bluemix_env_domain:    replace-me
-   bmapps_domain:         replace-me
-   router_ip:             replace-me
-   router_dal09_ip:       replace-me
-   data_center_name:      replace-me
-   private_vlan_id:       replace-me
-   public_vlan_id:        replace-me
-   stemcell:              replace-me
-   stemcell_version:      replace-me
-   main_user_name:        replace-me
-   password:              replace-me
-   ccng_pkg_os_api_key:   replace-me
-   ccng_pkg_os_temp_url_key: replace-me
-   ccng_pkg_os_username:  replace-me
-   ccng_pkg_os_auth_url:  replace-me
-   wal_nfs_evault_pwd:    replace-me
-   wal_nfs_evault_user:   replace-me
-   cf_release:            replace-me
-   cf_release_version:    replace-me
-   cf_services_release:   replace-me
-   cf_services_release_version: replace-me
-   cf_services_contrib_release: replace-me
-   cf_services_contrib_release_version: replace-me
-
+  bluemix_env_domain:                   replace-me
+  director_ip:                          replace-me
+  director_pub_ip:                      replace-me
+  bosh_dns:                             replace-me
+  director_uuid:                        replace-me
+  vm_name_prefix:                       replace-me
+  data_center_name:                     replace-me
+  private_vlan_id:                      replace-me
+  public_vlan_id:                       replace-me
+  stemcell:                             replace-me
+  stemcell_version:                     replace-me
+  cf_release:                           replace-me
+  cf_release_version:                   replace-me
+  cf_services_release:                  replace-me
+  cf_services_release_version:          replace-me
+  cf_services_contrib_release:          replace-me
+  cf_services_contrib_release_version:  replace-me
