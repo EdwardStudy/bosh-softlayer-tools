@@ -54,7 +54,18 @@ ${deployment_dir}/bosh-cli* interpolate cf-template/cf-template.yml \
 							-v cf_services_contrib_release_version=${cf_services_contrib_release_version}\
 						    > ${deployment_dir}/cf-deploy.yml
 
+releases=$(${deployment_dir}/bosh-cli* int ./cf-deploy.yml --path /releases |grep -Po '(?<=- location: ).*')
 
+# upload releases
+while IFS= read -r line; do
+  ${deployment_dir}/bosh-cli* -e bosh-test upload-release $line 
+done < $releases
+
+# upload stemcell
+stemcell=$(${deployment_dir}/bosh-cli* int ./cf-deploy.yml --path /stemcell_location)
+while IFS= read -r line; do
+  ${deployment_dir}/bosh-cli* -e bosh-test upload-stemcell $line 
+done < $stemcell
 
 echo "done">cf-info/cf-info
 
