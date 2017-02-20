@@ -59,7 +59,7 @@ releases=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --pat
 # upload releases
 while IFS= read -r line; do
   ${deployment_dir}/bosh-cli* -e bosh-test upload-release $line 
-done < $releases
+done < "$releases"
 
 # upload stemcell
 stemcell=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /stemcell_location)
