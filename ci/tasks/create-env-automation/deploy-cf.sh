@@ -40,6 +40,39 @@ export BOSH_CLIENT=admin
 export BOSH_CLIENT_SECRET=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/credentials.yml --path /DI_ADMIN_PASSWORD)
 ${deployment_dir}/bosh-cli* -e bosh-test login
 
+# generate cf deployment yml file
+
+${deployment_dir}/bosh-cli* interpolate cf-template/cf-template.yml \
+                     	-v bluemix_env_name=${bluemix_env_name}\
+						-v boshdns=${boshdns}\
+						-v bluemix_env_geo=${bluemix_env_geo}\
+						-v bluemix_env_domain=${bluemix_env_domain}\
+						-v bmapps_domain=${bmapps_domain}\
+						-v router_ip=${router_ip}\
+						-v router_dal09_ip=${router_dal09_ip}\
+						-v data_center_name=${data_center_name}\
+						-v private_vlan_id=${private_vlan_id}\
+						-v public_vlan_id=${public_vlan_id}\
+						-v stemcell=${stemcell}\
+						-v stemcell_version=${stemcell_version}\
+						-v main_user_name=${main_user_name}\
+						-v password=${password}\
+						-v ccng_pkg_os_api_key=${ccng_pkg_os_api_key}\
+						-v ccng_pkg_os_temp_url_key=${ccng_pkg_os_temp_url_key}\
+						-v ccng_pkg_os_username=${ccng_pkg_os_username}\
+						-v ccng_pkg_os_auth_url=${ccng_pkg_os_auth_url}\
+						-v wal_nfs_evault_pwd=${wal_nfs_evault_pwd}\
+						-v wal_nfs_evault_user=${wal_nfs_evault_user}\
+						-v cf_release=${cf_release}\
+						-v cf_release_version=${cf_release_version}\
+						-v cf_services_release=${cf_services_release}\
+						-v cf_services_release_version=${cf_services_release_version}\
+						-v cf_services_contrib_release=${cf_services_contrib_release}\
+						-v cf_services_contrib_release_version=${cf_services_contrib_release_version}\
+						> ${deployment_dir}/cf-deploy.yml
+						
+
+
 
 echo "done">cf-info/cf-info
 
