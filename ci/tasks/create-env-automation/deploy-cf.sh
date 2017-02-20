@@ -67,5 +67,7 @@ while IFS= read -r line; do
   ${deployment_dir}/bosh-cli* -e bosh-test upload-stemcell $line 
 done <<< "$stemcell"
 
+${deployment_dir}/bosh-cli-2.0.5-linux-amd64 -e bosh-test -d ${deploy_name} deploy ${deployment_dir}/cf-deploy.yml 
+
 echo "done">cf-info/cf-info
 
