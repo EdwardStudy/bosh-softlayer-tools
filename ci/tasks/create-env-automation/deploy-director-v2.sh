@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e -x
+set -e
 
 source bosh-softlayer-tools/ci/tasks/utils.sh
 source /etc/profile.d/chruby.sh
@@ -47,7 +47,7 @@ chmod +x bosh-cli-v2/bosh-cli*
     cat /etc/hosts | grep "$SL_VM_DOMAIN" | tee ${deployment_dir}/director-hosts
     echo "====================================================================="
     echo "Saving config..."
-    DIRECTOR_VM_ID=grep -Po '(?<=current_vm_cid": ")[^"]*' ${deployment_dir}/director-deploy-state.json
+    DIRECTOR_VM_ID=$(grep -Po '(?<=current_vm_cid": ")[^"]*' ${deployment_dir}/director-deploy-state.json)
     slcli vs detail ${DIRECTOR_VM_ID} > ${deployment_dir}/director-detail
     cp bosh-cli-v2/bosh-cli* ${deployment_dir}/
     pushd ${deployment_dir}
