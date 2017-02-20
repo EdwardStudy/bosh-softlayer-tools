@@ -14,12 +14,12 @@ outputs:
 - name: cf-info
 
 params:
+  deploy_name:                          replace-me
   bluemix_env_domain:                   replace-me
   director_ip:                          replace-me
   director_pub_ip:                      replace-me
   bosh_dns:                             replace-me
   director_uuid:                        replace-me
-  vm_name_prefix:                       replace-me
   data_center_name:                     replace-me
   private_vlan_id:                      replace-me
   public_vlan_id:                       replace-me
