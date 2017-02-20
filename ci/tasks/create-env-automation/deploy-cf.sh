@@ -41,6 +41,5 @@ export BOSH_CLIENT_SECRET=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cr
 ${deployment_dir}/bosh-cli* -e bosh-test login
 
 
-mkdir cf-info
 echo "done">cf-info/cf-info
 
