@@ -16,7 +16,6 @@ function cf_push_cpp () {
   print_title "CF PUSH APP..."
   name_server={NAME_SERVER}
   sed -i '1 i\nameserver '"${name_server}"'' /etc/resolv.conf
-  sudo apt-get -y install expect
   app="cf-app/IICVisit.war"
 
   CF_TRACE=true cf api ${CF-API}
