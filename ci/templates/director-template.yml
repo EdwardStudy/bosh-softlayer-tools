@@ -137,8 +137,6 @@ cloud_provider:
 
 
 variables:
-- name: SL_API_KEY
-  type: password
 - name: DI_ADMIN_PASSWORD
   type: password
 - name: DI_HM_PASSWORD
