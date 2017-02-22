@@ -3,15 +3,15 @@ platform: linux
 image: docker:///cloudfoundry/bosh-lite-ci
 
 inputs:
-  - name: bosh-softlayer-tools
-    path: gopath/src/github.com/cloudfoundry-community/bosh-softlayer-tools
+- name: bosh-softlayer-tools
+- name: cf-app
 
 run:
-  path: gopath/src/github.com/cloudfoundry-community/bosh-softlayer-tools/ci/tasks/verify-environment.sh
+  path: bosh-softlayer-tools/ci/tasks/create-env-automation/verify-cf.sh
 
 params:
-  CF-API: replace-me
-  CF-USERNAME: replace-me
-  CF-PASSWORD: replace-me
-  APP-API: replace-me
-  NAME_SERVER: replace-me
+  CF-API: 			replace-me
+  CF-USERNAME: 		replace-me
+  CF-PASSWORD: 		replace-me
+  APP-API: 			replace-me
+  NAME_SERVER: 		replace-me
