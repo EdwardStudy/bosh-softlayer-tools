@@ -3,16 +3,16 @@ set -e -x
 
 source bosh-softlayer-tools/ci/tasks/utils.sh
 
-check_param CF-API
-check_param CF-USERNAME
-check_param CF-PASSWORD
-check_param APP-API
+check_param CF_API
+check_param CF_USERNAME
+check_param CF_PASSWORD
+check_param APP_API
 check_param NAME_SERVER
 
-echo ${CF-API}
-echo ${CF-USERNAME}
-echo ${CF-PASSWORD}
-echo ${APP-API}
+echo ${CF_API}
+echo ${CF_USERNAME}
+echo ${CF_PASSWORD}
+echo ${APP_API}
 echo ${NAME_SERVER}
 
 function install_cf_cli () {
@@ -29,11 +29,11 @@ function cf_push_cpp () {
   sed -i '1 i\nameserver '"${name_server}"'' /etc/resolv.conf
   app="cf-app/IICVisit.war"
 
-  CF_TRACE=true cf api ${CF-API}
-  CF_TRACE=true cf login -u ${CF-USERNAME} -p ${CF-PASSWORD}
+  CF_TRACE=true cf api ${CF_API}
+  CF_TRACE=true cf login -u ${CF_USERNAME} -p ${CF_PASSWORD}
   base=`dirname "$0"`
   cf push IICVisit -p ${base}/${app}
-  curl iicvisit.${APP-API}/GetEnv|grep "DEA IP"
+  curl iicvisit.${APP_API}/GetEnv|grep "DEA IP"
   if [ $? -eq 0 ]; then
    echo "cf push app successful!"
   else
