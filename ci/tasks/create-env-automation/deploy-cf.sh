@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e -x
+set -e
 source bosh-softlayer-tools/ci/tasks/utils.sh
 
 check_param bluemix_env_domain
