@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 set -e -x
 
+source bosh-softlayer-tools/ci/tasks/utils.sh
+
 check_param CF-API
 check_param CF-USERNAME
 check_param CF-PASSWORD
 check_param APP-API
 check_param NAME_SERVER
-
-
-source bosh-softlayer-tools/ci/tasks/utils.sh
 
 function install_cf_cli () {
   print_title "INSTALL CF CLI..."
