@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -e -x
 
-dir=`dirname "$0"`
-source ${dir}/utils.sh
+source bosh-softlayer-tools/ci/tasks/utils.sh
 
 function install_cf_cli () {
   print_title "INSTALL CF CLI..."
