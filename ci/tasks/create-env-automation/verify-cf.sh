@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -e -x
 
+check_param CF-API
+check_param CF-USERNAME
+check_param CF-PASSWORD
+check_param APP-API
+check_param NAME_SERVER
+
+
 source bosh-softlayer-tools/ci/tasks/utils.sh
 
 function install_cf_cli () {
@@ -13,7 +20,7 @@ function install_cf_cli () {
 
 function cf_push_cpp () {
   print_title "CF PUSH APP..."
-  name_server={NAME_SERVER}
+  name_server=${NAME_SERVER}
   sed -i '1 i\nameserver '"${name_server}"'' /etc/resolv.conf
   app="cf-app/IICVisit.war"
 
