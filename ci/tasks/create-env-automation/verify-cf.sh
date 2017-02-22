@@ -9,6 +9,12 @@ check_param CF-PASSWORD
 check_param APP-API
 check_param NAME_SERVER
 
+echo CF-API
+echo CF-USERNAME
+echo CF-PASSWORD
+echo APP-API
+echo NAME_SERVER
+
 function install_cf_cli () {
   print_title "INSTALL CF CLI..."
   curl -L "https://cli.run.pivotal.io/stable?release=linux64-binary&source=github" | tar -zx
