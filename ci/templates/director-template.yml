@@ -31,7 +31,7 @@ resource_pools:
       NetworkVlan:
         Id: ((SL_VLAN_PRIVATE))
     NetworkComponents:
-    - MaxSpeed: 1000
+    - MaxSpeed: 100
 
 disk_pools:
 - name: disks
@@ -131,7 +131,7 @@ cloud_provider:
 
   properties:
     softlayer: *softlayer
-    agent: {mbus: "https://admin:((DI_ADMIN_PASSWORD))@((SL_VM_DOMAIN)):6868"}
+    agent: {mbus: "https://admin:((DI_ADMIN_PASSWORD))@0.0.0.0:6868"}
     blobstore: {provider: local, path: /var/vcap/micro_bosh/data/cache}
     ntp: *ntp
 
