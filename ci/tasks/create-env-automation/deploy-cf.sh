@@ -68,7 +68,7 @@ while IFS= read -r line; do
 done <<< "$stemcell"
 
 /usr/bin/env expect<<EOF
-spawn ${deployment_dir}/bosh-cli-2.0.5-linux-amd64 -e bosh-test -d ${deploy_name} deploy ${deployment_dir}/cf-deploy.yml 
+spawn ${deployment_dir}/bosh-cli* -e bosh-test -d ${deploy_name} deploy ${deployment_dir}/cf-deploy.yml 
 expect "*Continue*"
 send "y"; interact 
 EOF
