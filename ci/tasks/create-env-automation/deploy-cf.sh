@@ -17,6 +17,8 @@ check_param cf_services_release_version
 check_param cf_services_contrib_release
 check_param cf_services_contrib_release_version
 
+apt-get install -y expect
+
 deployment_dir="${PWD}/deployment"
 mkdir -p $deployment_dir
 
