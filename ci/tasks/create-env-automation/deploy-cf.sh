@@ -72,7 +72,8 @@ done <<< "$stemcell"
 /usr/bin/env expect<<EOF
 spawn bash -c "${deployment_dir}/bosh-cli* -e bosh-test -d ${deploy_name} deploy ${deployment_dir}/cf-deploy.yml"
 expect "*Continue*"
-send "y"; interact 
+exp_send "y\r"
+expect eof 
 EOF
 
 echo "done">cf-info/cf-info
