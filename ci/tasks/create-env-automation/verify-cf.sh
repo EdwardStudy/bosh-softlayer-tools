@@ -8,8 +8,7 @@ check_param CF_USERNAME
 check_param CF_PASSWORD
 check_param APP_API
 
-dir=`dirname "$0"`
-source ${dir}/utils.sh
+source bosh-softlayer-tools/ci/tasks/utils.sh
 deployment_dir="${PWD}/deployment"
 mkdir -p $deployment_dir
 tar -zxvf director-artifacts/director_artifacts.tgz -C ${deployment_dir}
@@ -30,8 +29,8 @@ function cf_push_cpp () {
 
   CF_TRACE=true cf api ${CF_API}
   CF_TRACE=true cf login -u ${CF_USERNAME} -p ${CF_PASSWORD}
-  base=`dirname "$0"`
-  cf push IICVisit -p ${base}/${app}
+
+  cf push IICVisit -p ${app}
   curl iicvisit.${APP_API}/GetEnv|grep "DEA IP"
   if [ $? -eq 0 ]; then
    echo "cf push app successful!"
