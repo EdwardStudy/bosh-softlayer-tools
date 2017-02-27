@@ -56,16 +56,16 @@ ${deployment_dir}/bosh-cli* interpolate cf-template/cf-template.yml \
 
 releases=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /releases |grep -Po '(?<=- location: ).*')
 
-# # upload releases
-# while IFS= read -r line; do
-#   ${deployment_dir}/bosh-cli* -e bosh-test upload-release $line 
-# done <<< "$releases"
+# upload releases
+while IFS= read -r line; do
+  ${deployment_dir}/bosh-cli* -e bosh-test upload-release $line 
+done <<< "$releases"
 
-# # upload stemcell
-# stemcell=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /stemcell_location)
-# while IFS= read -r line; do
-#   ${deployment_dir}/bosh-cli* -e bosh-test upload-stemcell $line 
-# done <<< "$stemcell"
+# upload stemcell
+stemcell=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /stemcell_location)
+while IFS= read -r line; do
+  ${deployment_dir}/bosh-cli* -e bosh-test upload-stemcell $line 
+done <<< "$stemcell"
 
 ${deployment_dir}/bosh-cli* -n -e bosh-test -d ${deploy_name} deploy ${deployment_dir}/cf-deploy.yml --no-redact
 
