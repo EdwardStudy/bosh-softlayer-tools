@@ -14,4 +14,3 @@ params:
   CF_USERNAME: 		replace-me
   CF_PASSWORD: 		replace-me
   APP_API: 			replace-me
-  NAME_SERVER: 		replace-me

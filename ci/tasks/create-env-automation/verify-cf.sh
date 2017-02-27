@@ -20,7 +20,7 @@ function install_cf_cli () {
 
 function cf_push_cpp () {
   print_title "CF PUSH APP..."
-  name_server=${NAME_SERVER}
+  name_server=$(cat deployment/director-hosts|awk "{print $1}")
   sed -i '1 i\nameserver '"${name_server}"'' /etc/resolv.conf
   app="cf-app/IICVisit.war"
 
