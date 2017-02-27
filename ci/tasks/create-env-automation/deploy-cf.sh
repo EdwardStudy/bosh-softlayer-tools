@@ -23,9 +23,11 @@ mkdir -p $deployment_dir
 tar -zxvf director-artifacts/director_artifacts.tgz -C ${deployment_dir}
 cat ${deployment_dir}/director-hosts >> /etc/hosts
 ${deployment_dir}/bosh-cli* -e $(cat ${deployment_dir}/director-hosts |awk '{print $2}') --ca-cert <(${deployment_dir}/bosh-cli* int ${deployment_dir}/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test 
+
+director_password=$({deployment_dir}/bosh-cli* int ${deployment_dir}/credentials.yml --path /DI_ADMIN_PASSWORD)
 echo "Trying to login to director..."
 export BOSH_CLIENT=admin
-export BOSH_CLIENT_SECRET=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/credentials.yml --path /DI_ADMIN_PASSWORD)
+export BOSH_CLIENT_SECRET=bosh_director_password
 ${deployment_dir}/bosh-cli* -e bosh-test login
 
 
@@ -35,6 +37,7 @@ director_uuid=$(grep -Po '(?<=director_id": ")[^"]*' ${deployment_dir}/director-
 
 # generate cf deployment yml file
 ${deployment_dir}/bosh-cli* interpolate cf-template/cf-template.yml \
+							-v director_password=${director_password} \
 							-v bluemix_env_domain=${bluemix_env_domain}\
 							-v director_ip=${director_ip}\
 							-v director_pub_ip=${director_pub_ip}\
@@ -56,16 +59,16 @@ ${deployment_dir}/bosh-cli* interpolate cf-template/cf-template.yml \
 
 releases=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /releases |grep -Po '(?<=- location: ).*')
 
-# upload releases
-while IFS= read -r line; do
-  ${deployment_dir}/bosh-cli* -e bosh-test upload-release $line 
-done <<< "$releases"
+# # upload releases
+# while IFS= read -r line; do
+#   ${deployment_dir}/bosh-cli* -e bosh-test upload-release $line 
+# done <<< "$releases"
 
-# upload stemcell
-stemcell=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /stemcell_location)
-while IFS= read -r line; do
-  ${deployment_dir}/bosh-cli* -e bosh-test upload-stemcell $line 
-done <<< "$stemcell"
+# # upload stemcell
+# stemcell=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /stemcell_location)
+# while IFS= read -r line; do
+#   ${deployment_dir}/bosh-cli* -e bosh-test upload-stemcell $line 
+# done <<< "$stemcell"
 
 ${deployment_dir}/bosh-cli* -n -e bosh-test -d ${deploy_name} deploy ${deployment_dir}/cf-deploy.yml --no-redact
 
