@@ -67,7 +67,7 @@ releases=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --pat
 #   ${deployment_dir}/bosh-cli* -e bosh-test upload-stemcell $line 
 # done <<< "$stemcell"
 
-${deployment_dir}/bosh-cli* -n -e bosh-test -d ${deploy_name} deploy ${deployment_dir}/cf-deploy.yml
+${deployment_dir}/bosh-cli* -n -e bosh-test -d ${deploy_name} deploy ${deployment_dir}/cf-deploy.yml --no-redact
 
 echo "done">cf-info/cf-info
 
