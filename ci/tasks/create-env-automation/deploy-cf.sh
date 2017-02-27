@@ -27,7 +27,7 @@ ${deployment_dir}/bosh-cli* -e $(cat ${deployment_dir}/director-hosts |awk '{pri
 director_password=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/credentials.yml --path /DI_ADMIN_PASSWORD)
 echo "Trying to login to director..."
 export BOSH_CLIENT=admin
-export BOSH_CLIENT_SECRET=${bosh_director_password}
+export BOSH_CLIENT_SECRET=${director_password}
 ${deployment_dir}/bosh-cli* -e bosh-test login
 
 
