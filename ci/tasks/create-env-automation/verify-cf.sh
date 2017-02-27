@@ -7,8 +7,12 @@ check_param CF_API
 check_param CF_USERNAME
 check_param CF_PASSWORD
 check_param APP_API
-check_param NAME_SERVER
 
+dir=`dirname "$0"`
+source ${dir}/utils.sh
+deployment_dir="${PWD}/deployment"
+mkdir -p $deployment_dir
+tar -zxvf director-artifacts/director_artifacts.tgz -C ${deployment_dir}
 
 function install_cf_cli () {
   print_title "INSTALL CF CLI..."
