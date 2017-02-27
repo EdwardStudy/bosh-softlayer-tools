@@ -4,6 +4,7 @@ image: docker:///boshcpi/azure-cpi-release
 
 inputs:
 - name: bosh-softlayer-tools
+- name: director-artifacts
 - name: cf-app
 
 run:
