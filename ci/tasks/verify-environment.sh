@@ -3,6 +3,9 @@ set -e
 
 dir=`dirname "$0"`
 source ${dir}/utils.sh
+deployment_dir="${PWD}/deployment"
+mkdir -p $deployment_dir
+tar -zxvf director-artifacts/director_artifacts.tgz -C ${deployment_dir}
 
 function install_cf_cli () {
   print_title "INSTALL CF CLI..."
@@ -11,6 +14,7 @@ function install_cf_cli () {
   echo "cf version..."
   cf --version
 }
+
 
 function cf_push_cpp () {
   print_title "CF PUSH APP..."
