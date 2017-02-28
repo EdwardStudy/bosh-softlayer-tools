@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -e -x
 
 source bosh-softlayer-tools/ci/tasks/utils.sh
 
@@ -24,6 +24,8 @@ function install_cf_cli () {
 function cf_push_cpp () {
   print_title "CF PUSH APP..."
   name_server=$(cat deployment/director-hosts|awk "{print $1}")
+
+  cat /etc/resolv.conf
   sed -i '1 i\nameserver '"${name_server}"'' /etc/resolv.conf
   app="cf-app/IICVisit.war"
 
