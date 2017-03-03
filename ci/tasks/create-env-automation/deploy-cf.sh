@@ -36,9 +36,16 @@ ${deployment_dir}/bosh-cli* interpolate cf-template/cf-template.yml \
 							-v data_center_name=${data_center_name}\
 							-v private_vlan_id=${private_vlan_id}\
 							-v public_vlan_id=${public_vlan_id}\
+							-v cf-release=${cf_release}\
+							-v cf-version=${cf_version}\
+							-v cf-services-release=${cf_services_release}\
+							-v cf-services-release-version=${cf_services_release_version}\
+							-v cf-services-contrib-release=${cf_services_contrib_release}\
+							-v cf-services-contrib-release-version=${cf_services_contrib_release_version}\
 						    > ${deployment_dir}/cf-deploy.yml
 
 releases=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /releases |grep -Po '(?<=- location: ).*')
+
 
 # upload releases
 while IFS= read -r line; do
