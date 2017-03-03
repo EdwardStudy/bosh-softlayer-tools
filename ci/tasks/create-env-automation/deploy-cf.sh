@@ -37,7 +37,7 @@ ${deployment_dir}/bosh-cli* interpolate cf-template/cf-template.yml \
 							-v private_vlan_id=${private_vlan_id}\
 							-v public_vlan_id=${public_vlan_id}\
 							-v cf-release=${cf_release}\
-							-v cf-version=${cf_version}\
+							-v cf-release-version=${cf_release_version}\
 							-v cf-services-release=${cf_services_release}\
 							-v cf-services-release-version=${cf_services_release_version}\
 							-v cf-services-contrib-release=${cf_services_contrib_release}\
