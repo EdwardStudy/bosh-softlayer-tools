@@ -35,6 +35,7 @@ END\\\$\\\$;
 ENDSQL
 /var/vcap/packages/postgres/bin/psql -U postgres -d bosh -a -f /tmp/update_dns.sql
 EOF
+chmod +x run-utils/update_dns.sh
 pushd run-utils
 echo "$director_ip" >ip_list
 ./run.sh -s update_dns.sh -i ip_list -p c1oudc0w
