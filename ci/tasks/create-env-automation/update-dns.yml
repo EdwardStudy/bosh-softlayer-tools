@@ -5,10 +5,8 @@ image: docker:///boshcpi/azure-cpi-release
 inputs:
 - name: director-artifacts
 - name: bosh-softlayer-tools
+- name: cf-artifacts
 
 run:
   path: bosh-softlayer-tools/ci/tasks/create-env-automation/update-dns.sh
-
-outputs:
-- name: cf-info
 
