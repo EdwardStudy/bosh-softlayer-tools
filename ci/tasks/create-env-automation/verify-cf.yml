@@ -11,7 +11,6 @@ run:
   path: bosh-softlayer-tools/ci/tasks/create-env-automation/verify-cf.sh
 
 params:
-  CF_API: 			replace-me
   CF_USERNAME: 		replace-me
   CF_PASSWORD: 		replace-me
   APP_API: 			replace-me

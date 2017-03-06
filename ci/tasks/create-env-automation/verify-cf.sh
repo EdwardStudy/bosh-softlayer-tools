@@ -6,7 +6,6 @@ source bosh-softlayer-tools/ci/tasks/utils.sh
 check_param CF_API
 check_param CF_USERNAME
 check_param CF_PASSWORD
-check_param APP_API
 
 source bosh-softlayer-tools/ci/tasks/utils.sh
 deployment_dir="${PWD}/deployment"
