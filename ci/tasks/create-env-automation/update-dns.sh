@@ -18,9 +18,7 @@ domain2="${deploy_name}.mybluemix.net"
 pg_password=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/credentials.yml --path /PG_PASSWORD)
 ip_ha=$(grep ha_proxy ${deployment_dir}/deployed-vms|awk '{print $4}')
 
-pushd $deployment_dir
-
-cat >update_dns.sh<<EOF
+cat >$deployment_dir/update_dns.sh<<EOF
 cat >update_dns.sql<ENDSQL
 DO \$\$
 DECLARE new_id INTEGER;
@@ -38,6 +36,4 @@ ENDSQL
 /var/vcap/packages/postgres/bin/psql -U postgres -d bosh -a -f update_dns.sql
 EOF
 
-run-utils/run.sh -s apply_etc_hosts.sh -i <(echo $director_ip) -p c1oudc0w -a | tee update_dns.log
-
-popd
+run-utils/run.sh -s $deployment_dir/update_dns.sh -i <(echo $director_ip) -p c1oudc0w -a | tee update_dns.log
