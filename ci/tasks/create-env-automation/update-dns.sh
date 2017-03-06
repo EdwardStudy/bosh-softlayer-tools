@@ -35,5 +35,8 @@ END\$\$;
 ENDSQL
 /var/vcap/packages/postgres/bin/psql -U postgres -d bosh -a -f /tmp/update_dns.sql
 EOF
+pushd run-utils
+./run.sh -s $deployment_dir/update_dns.sh -i <(echo $director_ip) -p c1oudc0w -a | tee update_dns.log
+popd
 
-run-utils/run.sh -s $deployment_dir/update_dns.sh -i <(echo $director_ip) -p c1oudc0w -a | tee update_dns.log
+
