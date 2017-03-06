@@ -12,12 +12,12 @@ tar -zxvf director-artifacts/director_artifacts.tgz -C ${deployment_dir}
 tar -zxvf cf-artifacts/cf_artifacts.tgz -C ${deployment_dir}
 
 deploy_name=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /name)
-director_ip=$(cat deployment/director-hosts|awk '{print $1}')
+director_ip=$(awk '{print $1}' deployment/director-hosts)
 domain1="${deploy_name}.bluemix.net"
 domain2="${deploy_name}.mybluemix.net"
 
 di_password=$(grep -w root ${deployment_dir}/director-detail|awk '{print $4}')
-pg_password=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/credendials.yml --path /PG_PASSWORD)
+pg_password=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/credentials.yml --path /PG_PASSWORD)
 ip_ha=grep ha_proxy ${deployment_dir}/vm-info|awk '{print $4}'
 
 cat >update_dns.sql<<EOF
