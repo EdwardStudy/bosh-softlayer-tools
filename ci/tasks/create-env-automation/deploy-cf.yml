@@ -11,15 +11,13 @@ run:
   path: bosh-softlayer-tools/ci/tasks/create-env-automation/deploy-cf.sh
 
 outputs:
-- name: cf-info
+- name: cf-artifacts
 
 params:
   deploy_name:                          replace-me
   bluemix_env_domain:                   replace-me
   director_ip:                          replace-me
   director_pub_ip:                      replace-me
-  bosh_dns:                             replace-me
-  director_uuid:                        replace-me
   data_center_name:                     replace-me
   private_vlan_id:                      replace-me
   public_vlan_id:                       replace-me
