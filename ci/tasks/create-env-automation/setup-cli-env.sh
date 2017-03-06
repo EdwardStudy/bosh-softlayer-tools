@@ -6,8 +6,8 @@ check_param SL_USERNAME
 check_param SL_API_KEY
 check_param SL_DATACENTER
 #TODO: create a docker image to avoid the installation.
-apt-get update > /dev/null 2>&1  
-apt-get install -y python-pip python-dev build-essential expect > /dev/null 2>&1  
+apt-get update > /dev/null 2>&1
+apt-get install -y python-pip python-dev build-essential expect > /dev/null 2>&1
 
 python -V
 
@@ -20,7 +20,7 @@ echo "Using $(slcli --version)"
 cat > ~/.softlayer <<EOF
 [softlayer]
 username = $SL_USERNAME
-api_key = $SL_API_KEY
+api_key  = $SL_API_KEY
 endpoint_url = https://api.softlayer.com/xmlrpc/v3.1/
 timeout = 0
 EOF
@@ -49,7 +49,6 @@ while true
         fi
         sleep 20
     done
-
 
 function finish {
     echo "Showing full vm info"
@@ -93,7 +92,6 @@ EOF
 chmod +x ./add-private-key.sh
 ./add-private-key.sh root $CLI_VM_IP $CLI_VM_PWD
 
-
 cat >post-setup.sh <<EOF
 #!/usr/bin/env bash
 set -e
@@ -102,7 +100,7 @@ tar zxvf /tmp/director_artifacts.tgz -C ~/deployment
 cat ~/deployment/director-hosts >> /etc/hosts
 chmod +X ~/deployment/bosh-cli*
 echo "Trying to set target to director..."
-~/deployment/bosh-cli* -e \$(cat ~/deployment/director-hosts |awk '{print \$2}') --ca-cert <(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test 
+~/deployment/bosh-cli* -e \$(cat ~/deployment/director-hosts |awk '{print \$2}') --ca-cert <(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DIRECTOR_SSL/ca ) alias-env bosh-test
 echo "Trying to login to director..."
 export BOSH_CLIENT=admin
 export BOSH_CLIENT_SECRET=\$(~/deployment/bosh-cli* int ~/deployment/credentials.yml --path /DI_ADMIN_PASSWORD)
@@ -117,14 +115,4 @@ ssh -i key.rsa root@$CLI_VM_IP '/tmp/post-setup.sh'
 trap - ERR
 
 finish
-
-
-
-
-
-
-
-
-
-
 
