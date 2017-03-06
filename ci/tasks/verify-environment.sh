@@ -33,6 +33,9 @@ EOF
   CF_TRACE=true cf api ${CF-API}
   CF_TRACE=true cf login -u ${CF-USERNAME} -p ${CF-PASSWORD}
   base=`dirname "$0"`
+  cf set-quota org q4GB
+  cf create-space dev
+  cf target -o org -s dev
   cf push IICVisit -p ${base}/${app}
   curl iicvisit.${APP-API}/GetEnv|grep "DEA IP"
   if [ $? -eq 0 ]; then

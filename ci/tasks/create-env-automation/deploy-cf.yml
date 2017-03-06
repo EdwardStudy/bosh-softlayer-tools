@@ -15,7 +15,6 @@ outputs:
 
 params:
   deploy_name:                          replace-me
-  bluemix_env_domain:                   replace-me
   director_ip:                          replace-me
   director_pub_ip:                      replace-me
   data_center_name:                     replace-me
