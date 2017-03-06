@@ -57,7 +57,7 @@ releases=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --pat
 # 
 # ${deployment_dir}/bosh-cli* -n -e bosh-test -d ${deploy_name} deploy ${deployment_dir}/cf-deploy.yml --no-redact
 
-cp ${deployment_dir}/cf-deploy.yml cf-info/cf-deploy.yml
+cp ${deployment_dir}/cf-deploy.yml  cf-info/
 ${deployment_dir}/bosh-cli* vms > cf-info/vm-info
 
 pushd cf-artifacts
