@@ -57,8 +57,8 @@ releases=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --pat
 # 
 # ${deployment_dir}/bosh-cli* -n -e bosh-test -d ${deploy_name} deploy ${deployment_dir}/cf-deploy.yml --no-redact
 
-cp ${deployment_dir}/cf-deploy.yml  cf-info/
-${deployment_dir}/bosh-cli* vms > cf-info/vm-info
+cp ${deployment_dir}/cf-deploy.yml  cf-artifacts/cf-deploy.yml
+${deployment_dir}/bosh-cli* vms > cf-artifacts/deployed-vms
 
 pushd cf-artifacts
    tar -zcvf  /tmp/cf_artifacts.tgz ./ >/dev/null 2>&1
