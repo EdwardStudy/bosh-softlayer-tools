@@ -6,6 +6,7 @@ source bosh-softlayer-tools/ci/tasks/utils.sh
 check_param CF_API
 check_param CF_USERNAME
 check_param CF_PASSWORD
+check_param APP_API
 
 source bosh-softlayer-tools/ci/tasks/utils.sh
 deployment_dir="${PWD}/deployment"
@@ -30,7 +31,9 @@ function cf_push_cpp () {
 
   CF_TRACE=true cf api ${CF_API}
   CF_TRACE=true cf login -u ${CF_USERNAME} -p ${CF_PASSWORD} --skip-ssl-validation
-
+  cf set-quota org q4GB
+  cf create-space dev
+  cf target -o org -s dev
   cf push IICVisit -p ${app}
   curl iicvisit.${APP_API}/GetEnv|grep "DEA IP"
   if [ $? -eq 0 ]; then
