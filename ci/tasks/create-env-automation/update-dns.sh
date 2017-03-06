@@ -3,7 +3,7 @@ set -e -x
 
 source bosh-softlayer-tools/ci/tasks/utils.sh
 source /etc/profile.d/chruby.sh
-apt-get install expect 
+apt-get -y install expect 
 deployment_dir="${PWD}/deployment"
 mkdir -p $deployment_dir
 
