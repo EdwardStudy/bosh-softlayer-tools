@@ -18,7 +18,7 @@ domain2="${deploy_name}.mybluemix.net"
 pg_password=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/credentials.yml --path /PG_PASSWORD)
 ip_ha=$(grep ha_proxy ${deployment_dir}/deployed-vms|awk '{print $4}')
 
-cat >$deployment_dir/update_dns.sh<<EOF
+cat >run-utils/update_dns.sh<<EOF
 cat >/tmp/update_dns.sql<<ENDSQL
 DO \\\$\\\$
 DECLARE new_id INTEGER;
@@ -37,7 +37,7 @@ ENDSQL
 EOF
 pushd run-utils
 echo "$director_ip" >ip_list
-./run.sh -s $deployment_dir/update_dns.sh -i ip_list -p c1oudc0w
+./run.sh -s update_dns.sh -i ip_list -p c1oudc0w
 popd
 
 
