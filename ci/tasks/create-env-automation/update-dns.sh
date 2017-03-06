@@ -19,7 +19,7 @@ domain2="${deploy_name}.mybluemix.net"
 
 di_password=$(grep -w root ${deployment_dir}/director-detail|awk '{print $4}')
 pg_password=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/credentials.yml --path /PG_PASSWORD)
-ip_ha=grep ha_proxy ${deployment_dir}/vm-info|awk '{print $4}'
+ip_ha=$(grep ha_proxy ${deployment_dir}/deployed-vms|awk '{print $4}')
 
 cat >update_dns.sql<<EOF
 DO \$\$
@@ -44,7 +44,7 @@ expect eof
 EOF
 
 /usr/bin/env expect<<EOF
-spawn ssh root@root@$director_ip <<ENDSSH
+spawn ssh root@$director_ip <<ENDSSH
 export PGPASSWORD=${pg_password}
 /var/vcap/packages/postgres/bin/psql -U postgres -d bosh -a -f /tmp/update_dns.sql
 ENDSSH
