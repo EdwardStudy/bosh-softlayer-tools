@@ -30,7 +30,7 @@ function cf_push_cpp () {
   app="cf-app/IICVisit.war"
 
   CF_TRACE=true cf api ${CF_API}
-  CF_TRACE=true cf login -u ${CF_USERNAME} -p ${CF_PASSWORD}
+  CF_TRACE=true cf login -u ${CF_USERNAME} -p ${CF_PASSWORD} --skip-ssl-validation
 
   cf push IICVisit -p ${app}
   curl iicvisit.${APP_API}/GetEnv|grep "DEA IP"

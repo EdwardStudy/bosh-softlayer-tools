@@ -38,10 +38,7 @@ EOF
 chmod +x run-utils/update_dns.sh
 pushd run-utils
 echo "$director_ip" >ip_list
-cat >test.sh<<EOF
-./run.sh -s update_dns.sh -i ip_list -p c1oudc0w
-EOF
-chmod +x test.sh && ./test.sh
+./run.sh -s ./update_dns.sh -i ip_list -p c1oudc0w
 popd
 
 
