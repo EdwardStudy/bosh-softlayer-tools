@@ -6,7 +6,6 @@ source /etc/profile.d/chruby.sh
 
 deployment_dir="${PWD}/deployment"
 mkdir -p $deployment_dir
-pushd $deployment_dir
 
 tar -zxvf director-artifacts/director_artifacts.tgz -C ${deployment_dir}
 tar -zxvf cf-artifacts/cf_artifacts.tgz -C ${deployment_dir}
@@ -18,6 +17,8 @@ domain1="${deploy_name}.bluemix.net"
 domain2="${deploy_name}.mybluemix.net"
 pg_password=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/credentials.yml --path /PG_PASSWORD)
 ip_ha=$(grep ha_proxy ${deployment_dir}/deployed-vms|awk '{print $4}')
+
+pushd $deployment_dir
 
 cat >update_dns.sh<<EOF
 cat >update_dns.sql<ENDSQL
