@@ -3,7 +3,7 @@ set -e -x
 
 source bosh-softlayer-tools/ci/tasks/utils.sh
 source /etc/profile.d/chruby.sh
-apt-get -y install expect 
+apt-get -y install expect >/dev/null 2>&1
 deployment_dir="${PWD}/deployment"
 mkdir -p $deployment_dir
 
@@ -37,7 +37,7 @@ ENDSQL
 EOF
 pushd run-utils
 echo "$director_ip" >ip_list
-./run.sh -s $deployment_dir/update_dns.sh -i ip_list -p c1oudc0wc | tee update_dns.log
+./run.sh -s $deployment_dir/update_dns.sh -i ip_list -p c1oudc0w
 popd
 
 
