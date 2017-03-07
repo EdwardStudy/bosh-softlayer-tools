@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -e -x
 
+source bosh-softlayer-tools/ci/tasks/utils.sh
+source /etc/profile.d/chruby.sh
+
+check_param VCAP_PASSWORD
+
 apt-get -y install expect >/dev/null 2>&1
 deployment_dir="${PWD}/deployment"
 mkdir -p $deployment_dir
@@ -8,7 +13,7 @@ mkdir -p $deployment_dir
 tar -zxvf director-artifacts/director_artifacts.tgz -C ${deployment_dir}
 tar -zxvf cf-artifacts/cf_artifacts.tgz -C ${deployment_dir}
 tar -zxvf run-utils/run-utils.tgz -C run-utils/
-di_password=$(grep -w root ${deployment_dir}/director-detail|awk '{print $4}')
+
 deploy_name=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /name)
 director_ip=$(awk '{print $1}' deployment/director-hosts)
 domain1="${deploy_name}.bluemix.net"
