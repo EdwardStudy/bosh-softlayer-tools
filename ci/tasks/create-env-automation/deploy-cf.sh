@@ -45,17 +45,19 @@ ${deployment_dir}/bosh-cli* interpolate cf-template/cf-template.yml \
 releases=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /releases |grep -Po '(?<=- location: ).*')
 
 # upload releases
-# while IFS= read -r line; do
-# ${deployment_dir}/bosh-cli* -e bosh-test upload-release $line
-# done <<< "$releases"
-# 
+while IFS= read -r line; do
+${deployment_dir}/bosh-cli* -e bosh-test upload-release $line
+done <<< "$releases"
+
 # upload stemcells
-# stemcell=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /stemcell_location)
-# while IFS= read -r line; do
-# ${deployment_dir}/bosh-cli* -e bosh-test upload-stemcell $line
-# done <<< "$stemcell"
-# 
-# ${deployment_dir}/bosh-cli* -n -e bosh-test -d ${deploy_name} deploy ${deployment_dir}/cf-deploy.yml --no-redact
+stemcell=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /stemcell_location)
+while IFS= read -r line; do
+#ignore error when  stemcell already exists. this is a bug in old bosh releases
+${deployment_dir}/bosh-cli* -e bosh-test upload-stemcell $line |true 
+
+done <<< "$stemcell"
+
+${deployment_dir}/bosh-cli* -n -e bosh-test -d ${deploy_name} deploy ${deployment_dir}/cf-deploy.yml --no-redact
 
 cp ${deployment_dir}/cf-deploy.yml  cf-artifacts/cf-deploy.yml
 ${deployment_dir}/bosh-cli* -e bosh-test vms > cf-artifacts/deployed-vms
