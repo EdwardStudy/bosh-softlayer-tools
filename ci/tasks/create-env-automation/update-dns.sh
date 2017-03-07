@@ -2,7 +2,6 @@
 set -e -x
 
 source bosh-softlayer-tools/ci/tasks/utils.sh
-source /etc/profile.d/chruby.sh
 
 check_param VCAP_PASSWORD
 
@@ -38,6 +37,7 @@ END\\\$\\\$;
 ENDSQL
 /var/vcap/packages/postgres/bin/psql -U postgres -d bosh -a -f /tmp/update_dns.sql
 EOF
+
 chmod +x run-utils/update_dns.sh
 pushd run-utils
 echo "$director_ip" >ip_list
