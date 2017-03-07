@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 set -e -x
 
-source bosh-softlayer-tools/ci/tasks/utils.sh
-
-check_param VCAP_PASSWORD
-
 apt-get -y install expect >/dev/null 2>&1
 deployment_dir="${PWD}/deployment"
 mkdir -p $deployment_dir
