@@ -119,6 +119,12 @@ jobs:
     softlayer: &softlayer
       username: ((SL_USERNAME))
       apiKey: ((SL_API_KEY))
+      featureOptions:
+        apiEndpoint: api.softlayer.com
+        apiRetryCount: 10
+        apiWaitTime: 5
+        createIscsiVolumeTimeout: 3600
+        createIscsiVolumePollingInterval: 5
 
     agent: {mbus: "nats://nats:((NATS_PASSWORD))@((SL_VM_DOMAIN)):4222"}
 
@@ -134,12 +140,7 @@ cloud_provider:
     agent: {mbus: "https://admin:((DI_ADMIN_PASSWORD))@0.0.0.0:6868"}
     blobstore: {provider: local, path: /var/vcap/micro_bosh/data/cache}
     ntp: *ntp
-    featureOptions:
-      apiEndpoint: api.softlayer.com
-      apiRetryCount: 10
-      apiWaitTime: 5
-      createIscsiVolumeTimeout: 3600
-      createIscsiVolumePollingInterval: 5
+
 
 
 variables:
