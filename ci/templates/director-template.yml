@@ -7,6 +7,7 @@ releases:
   sha1: b41821dccee78ad7bd44466cd0160920c183787a
 - name: bosh-softlayer-cpi
   url: https://s3.amazonaws.com/bosh-softlayer-cpi-pipeline/bosh-softlayer-cpi-6.tgz
+  sha1: 2c798e0db8444af03c5a63da863419712d7b848f
 
 resource_pools:
 - name: vms
