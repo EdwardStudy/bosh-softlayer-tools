@@ -6,8 +6,7 @@ releases:
   url: https://bosh.io/d/github.com/cloudfoundry/bosh?v=257.14
   sha1: b41821dccee78ad7bd44466cd0160920c183787a
 - name: bosh-softlayer-cpi
-  url: https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-softlayer-cpi-release?v=3.0.5
-  sha1: e7eac102bf24b5c80574ffd287dff429bc8f0cd9
+  url: https://s3.amazonaws.com/bosh-softlayer-cpi-pipeline/bosh-softlayer-cpi-6.tgz
 
 resource_pools:
 - name: vms
@@ -35,7 +34,7 @@ resource_pools:
 
 disk_pools:
 - name: disks
-  disk_size: 20_000
+  disk_size: 200_000
 
 networks:
 - name: default
@@ -134,6 +133,12 @@ cloud_provider:
     agent: {mbus: "https://admin:((DI_ADMIN_PASSWORD))@0.0.0.0:6868"}
     blobstore: {provider: local, path: /var/vcap/micro_bosh/data/cache}
     ntp: *ntp
+    featureOptions:
+      apiEndpoint: api.softlayer.com
+      apiRetryCount: 10
+      apiWaitTime: 5
+      createIscsiVolumeTimeout: 3600
+      createIscsiVolumePollingInterval: 5
 
 
 variables:
