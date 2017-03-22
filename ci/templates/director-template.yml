@@ -13,8 +13,8 @@ resource_pools:
 - name: vms
   network: default
   stemcell:
-    url: https://s3.amazonaws.com/bosh-softlayer-cpi-stemcells/light-bosh-stemcell-3263.10-softlayer-xen-ubuntu-trusty-go_agent.tgz
-    sha1: 618792f374789d9940e5b0e128a3667c8986aa90
+    url: http://10.106.192.96/releases/light-bosh-stemcell/3263.10.8/light-bosh-stemcell-3263.10.8-softlayer-xen-ubuntu-trusty-go_agent.tgz
+    sha1: 00ae81fff40a4630ad750b9e61a944a740f07220
   cloud_properties:
     Domain: softlayer.com
     VmNamePrefix: ((SL_VM_PREFIX))
