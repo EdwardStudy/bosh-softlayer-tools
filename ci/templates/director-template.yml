@@ -32,7 +32,6 @@ resource_pools:
         Id: ((SL_VLAN_PRIVATE))
     NetworkComponents:
     - MaxSpeed: 100
-    not_deployed_by_director: true
 
 disk_pools:
 - name: disks
