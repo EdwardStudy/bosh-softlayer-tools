@@ -34,9 +34,9 @@ resource_pools:
     NetworkComponents:
     - MaxSpeed: 100
     DeployedByBoshcli: true
-    env:
-      bosh:
-        keep_root_password: true
+  env:
+    bosh:
+      keep_root_password: true
 
 disk_pools:
 - name: disks
