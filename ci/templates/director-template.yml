@@ -6,15 +6,14 @@ releases:
   url: https://bosh.io/d/github.com/cloudfoundry/bosh?v=257.14
   sha1: b41821dccee78ad7bd44466cd0160920c183787a
 - name: bosh-softlayer-cpi
-  url: https://s3.amazonaws.com/bosh-softlayer-cpi-stemcells/light-bosh-stemcell-3263.10-softlayer-xen-ubuntu-trusty-go_agent.tgz
-  sha1: 618792f374789d9940e5b0e128a3667c8986aa90
-
+  url: https://bosh.io/d/github.com/cloudfoundry/bosh-softlayer-cpi-release?v=10
+  sha1: f0209e5565b64beccffa4482945c865890b5ca71
+    
 resource_pools:
 - name: vms
   network: default
-  
   stemcell:
-    url: https://bosh.io/d/stemcells/bosh-softlayer-xen-ubuntu-trusty-go_agent?v=3363.12.1
+    url: https://s3.amazonaws.com/bosh-softlayer-cpi-stemcells/light-bosh-stemcell-3263.10-softlayer-xen-ubuntu-trusty-go_agent.tgz
     sha1: 618792f374789d9940e5b0e128a3667c8986aa90
   cloud_properties:
     Domain: softlayer.com
