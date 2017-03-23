@@ -74,8 +74,8 @@ function stemcell_exist(){
 
 
 if ! stemcell_exist ${stemcell_version}; then
-	stemcell_location = $(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /stemcell_location)
-	${deployment_dir}/bosh-cli* -e bosh-test upload-stemcell stemcell_location
+	stemcell_location=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /stemcell_location)
+	${deployment_dir}/bosh-cli* -e bosh-test upload-stemcell ${stemcell_location}
 fi
 
 
