@@ -34,6 +34,8 @@ ${deployment_dir}/bosh-cli* interpolate cf-template/cf-template.yml \
 							-v data_center_name=${data_center_name}\
 							-v private_vlan_id=${private_vlan_id}\
 							-v public_vlan_id=${public_vlan_id}\
+							-v stemcell=${stemcell}\
+							-v stemcell_version=${stemcell_version}\
 							-v cf-release=${cf_release}\
 							-v cf-release-version=${cf_release_version}\
 							-v cf-services-release=${cf_services_release}\
@@ -44,18 +46,37 @@ ${deployment_dir}/bosh-cli* interpolate cf-template/cf-template.yml \
 
 releases=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /releases |grep -Po '(?<=- location: ).*')
 
-# # upload releases
-# while IFS= read -r line; do
-# ${deployment_dir}/bosh-cli* -e bosh-test upload-release $line
-# done <<< "$releases"
+# upload releases
+while IFS= read -r line; do
+${deployment_dir}/bosh-cli* -e bosh-test upload-release $line
+done <<< "$releases"
 
 # # upload stemcells
 # stemcell=$(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /stemcell_location)
 # while IFS= read -r line; do
 # #ignore error when  stemcell already exists. this is a bug in old bosh releases
 # ${deployment_dir}/bosh-cli* -e bosh-test upload-stemcell $line |true 
-
 # done <<< "$stemcell"
+
+
+function stemcell_exist(){
+	stemcell_version=$1
+	uploaded_stemcells=$(${deployment_dir}/bosh-cli*  -e bosh-test stemcells |awk '{print $2}'|sed s/[+*]$//)
+	IFS= read -r -a stemcells<<<"$uploaded_stemcells"
+	for stemcell in "$stemcells"
+	do
+		if [ "$stemcell_version" == "$stemcell" ]
+			return 0
+	done
+	return 1
+}
+
+
+if ! stemcell_exist ${stemcell_version}; then
+	stemcell_location = $(${deployment_dir}/bosh-cli* int ${deployment_dir}/cf-deploy.yml --path /stemcell_location)
+	${deployment_dir}/bosh-cli* -e bosh-test upload-stemcell stemcell_location
+fi
+
 
 ${deployment_dir}/bosh-cli* -n -e bosh-test -d ${deploy_name} deploy ${deployment_dir}/cf-deploy.yml --no-redact
 
