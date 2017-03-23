@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -e -x
 source bosh-softlayer-tools/ci/tasks/utils.sh
 
 check_param deploy_name
@@ -67,6 +67,7 @@ function stemcell_exist(){
 	do
 		if [ "$stemcell_version" == "$stemcell" ]
 			return 0
+		fi
 	done
 	return 1
 }
