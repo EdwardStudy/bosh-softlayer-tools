@@ -1,0 +1,157 @@
+---
+resources:
+- name: director-artifacts
+  type: s3
+  source:
+    bucket: {{s3-bucket-name}}
+    versioned_file: director_artifacts.tgz
+    access_key_id: {{s3-access-key-id}}
+    secret_access_key: {{s3-secret-access-key}}
+- name: cli-vm-info
+  type: s3
+  source:
+    access_key_id: {{s3-access-key-id}}
+    versioned_file: cli-vm-info
+    bucket: {{s3-bucket-name}}
+    secret_access_key: {{s3-secret-access-key}}
+- name: cf-template
+  type: s3
+  source:
+    access_key_id: {{s3-access-key-id}}
+    versioned_file: cf-template.yml
+    bucket: {{s3-bucket-name}}
+    secret_access_key: {{s3-secret-access-key}}
+- name: cf-artifacts
+  type: s3
+  source:
+    access_key_id: {{s3-access-key-id}}
+    versioned_file: cf_artifacts.tgz
+    bucket: {{s3-bucket-name}}
+    secret_access_key: {{s3-secret-access-key}}
+- name: cf-app
+  type: s3
+  source:
+    versioned_file: IICVisit.war
+    access_key_id: {{s3-access-key-id}}
+    bucket: {{s3-bucket-name}}
+    secret_access_key: {{s3-secret-access-key}}
+- name: run-utils
+  type: s3
+  source:
+    versioned_file: run-utils.tgz
+    access_key_id: {{s3-access-key-id}}
+    bucket: {{s3-bucket-name}}
+    secret_access_key: {{s3-secret-access-key}}
+- name: bosh-cli-v2
+  type: s3
+  source:
+    bucket: bosh-cli-artifacts
+    regexp: bosh-cli-(.*)-linux-amd64
+- name: bosh-create-env-ci
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:xliuxu/bosh-softlayer-tools.git
+
+jobs:
+- name: deploy-director
+  serial: true
+  plan:
+  - aggregate:
+    - get: bosh-cli-v2
+      resource: bosh-cli-v2
+    - get: bosh-softlayer-tools
+      resource: bosh-create-env-ci
+  - task: deploy
+    file: bosh-softlayer-tools/ci/tasks/create-env-automation/deploy-director-v2.yml
+    params:
+      SL_VM_PREFIX:         {{director-vm-prefix}}
+      SL_USERNAME:          {{softlayer-username}}
+      SL_API_KEY:           {{softlayer-key}}
+      SL_DATACENTER:        {{softlayer-datacenter}}
+      SL_VLAN_PUBLIC:       {{softlayer-vlan-public}}
+      SL_VLAN_PRIVATE:      {{softlayer-vlan-private}}
+  - put: director-artifacts
+    params:
+      file: deploy-artifacts/director_artifacts.tgz
+
+- name: setup-cli-env
+  plan:
+  - aggregate:
+    - get: director-artifacts
+      passed:
+      - deploy-director
+    - get: bosh-softlayer-tools
+      resource: bosh-create-env-ci
+  - task: create-cli-env
+    file: bosh-softlayer-tools/ci/tasks/create-env-automation/setup-cli-env.yml
+    params:
+      SL_USERNAME:      {{softlayer-username}}
+      SL_API_KEY:       {{softlayer-key}}
+      SL_DATACENTER:    {{softlayer-datacenter}}
+  - put: cli-vm-info
+    params:
+      file: cli-vm-info/CLI_VM_INFO.tgz
+
+- name: deploy-cf
+  plan:
+  - aggregate:
+    - get: director-artifacts
+      resource: director-artifacts
+      passed:
+      - deploy-director
+    - get: bosh-softlayer-tools
+      resource: bosh-create-env-ci
+    - get: cf-template
+      resource: cf-template
+  - task: deploy-cf
+    file: bosh-softlayer-tools/ci/tasks/create-env-automation/deploy-cf.yml
+    params:
+      deploy_name: security-test-env2
+      data_center_name: {{softlayer-datacenter}}
+      private_vlan_id:  {{softlayer-vlan-public}}
+      public_vlan_id:   {{softlayer-vlan-private}}
+      cf_release: cf-235020
+      cf_release_version: ibm-v235.20
+      cf_services_release: cf-services-235020
+      cf_services_release_version: ibm-v235.20
+      cf_services_contrib_release: cf-services-contrib-235020
+      cf_services_contrib_release_version: ibm-v235.20
+  - put: cf-artifacts
+    params:
+      file: cf-artifacts/cf_artifacts.tgz
+- name: update-dns
+  plan:
+  - aggregate:
+    - get: director-artifacts
+      resource: director-artifacts
+    - get: bosh-softlayer-tools
+      resource: bosh-create-env-ci
+    - get: run-utils
+      resource: run-utils
+    - get: cf-artifacts
+      resource: cf-artifacts
+      passed:
+      - deploy-cf
+  - task: update-dns
+    file: bosh-softlayer-tools/ci/tasks/create-env-automation/update-dns.yml
+    params:
+      VCAP_PASSWORD: {{vcap-password}}
+- name: verify-cf-push
+  plan:
+  - aggregate:
+    - get: cf-app
+      resource: cf-app
+    - get: bosh-softlayer-tools
+      resource: bosh-create-env-ci
+    - get: director-artifacts
+      resource: director-artifacts
+      passed:
+      - update-dns
+  - task: cf-push-app
+    file: bosh-softlayer-tools/ci/tasks/create-env-automation/verify-cf.yml
+    params:
+      APP_API: {{cf-app-api}}       #   /properties/domain in cf-template.yml
+      CF_API:  {{cf-api}}           #   /properties/cc/srv_api_uri in cf-template.yml
+      CF_USERNAME: {{cf-username}}  #   /properties/uaa/scim/users in cf-template.yml
+      CF_PASSWORD: {{cf-password}}  #   /properties/uaa/scim/users in cf-template.yml
